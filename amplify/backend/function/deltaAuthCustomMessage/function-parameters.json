@@ -1,0 +1,24 @@
+{
+    "trigger": true,
+    "modules": [
+        "verification-link"
+    ],
+    "parentResource": "deltaAuth",
+    "functionName": "deltaAuthCustomMessage",
+    "resourceName": "deltaAuthCustomMessage",
+    "parentStack": "auth",
+    "triggerEnvs": [
+        {
+            "key": "RESOURCENAME",
+            "value": "resourceName"
+        }
+    ],
+    "triggerDir": "C:\\Users\\Aaron\\AppData\\Roaming\\npm\\node_modules\\@aws-amplify\\cli\\node_modules\\amplify-category-auth\\provider-utils\\awscloudformation\\utils/../triggers/CustomMessage",
+    "triggerTemplate": "CustomMessage.json.ejs",
+    "roleName": "deltaAuthCustomMessage",
+    "skipEdit": true,
+    "REDIRECTURL": "",
+    "EMAILSUBJECT": "Account Confirm",
+    "EMAILMESSAGE": "Account Confirm ",
+    "RESOURCENAME": "resourceName"
+}
