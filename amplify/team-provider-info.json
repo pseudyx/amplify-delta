@@ -14,16 +14,19 @@
         "categories": {
             "function": {
                 "deltaAuthCustomMessage": {
-                    "REDIRECTURL": "",
-                    "EMAILSUBJECT": "Account Confirm",
-                    "EMAILMESSAGE": "Account Confirm "
+                    "REDIRECTURL": "/Delta",
+                    "EMAILSUBJECT": "Account Confirmation",
+                    "EMAILMESSAGE": "Account Confirmed"
                 },
                 "deltaAuthPostConfirmation": {
-                    "GROUP": "Legion"
-                }
+                    "GROUP": "legion"
+                },
+                "AdminQueries2b544908": {},
+                "deltaAuth": {}
             },
             "auth": {
-                "deltaAuth": {}
+                "deltaAuth": {},
+                "userPoolGroups": {}
             }
         }
     }

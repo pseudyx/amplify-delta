@@ -1,7 +1,7 @@
 {
     "identityPoolName": "delta_identitypool",
     "allowUnauthenticatedIdentities": true,
-    "resourceNameTruncated": "deltaA00bbcab5",
+    "resourceNameTruncated": "deltaA362a99af",
     "userPoolName": "delta_userpool",
     "autoVerifiedAttributes": [
         "email"
@@ -12,7 +12,7 @@
     ],
     "smsAuthenticationMessage": "Your authentication code is {####}",
     "smsVerificationMessage": "Your verification code is {####}",
-    "emailVerificationSubject": "Verify Email",
+    "emailVerificationSubject": "Your verification code",
     "emailVerificationMessage": "Your verification code is {####}",
     "defaultPasswordPolicy": false,
     "passwordPolicyMinLength": 8,
@@ -37,7 +37,7 @@
         "picture",
         "profile"
     ],
-    "userpoolClientLambdaRole": "deltaA00bbcab5_userpoolclient_lambda_role",
+    "userpoolClientLambdaRole": "deltaA362a99af_userpoolclient_lambda_role",
     "userpoolClientSetAttributes": true,
     "useDefault": "manual",
     "authSelections": "identityPoolAndUserPool",
@@ -51,10 +51,10 @@
     "triggers": "{\"CustomMessage\":[\"verification-link\"],\"PostConfirmation\":[\"add-to-group\"]}",
     "hostedUI": false,
     "userPoolGroupList": [
-        "Admin",
-        "Legion"
+        "admin",
+        "legion"
     ],
-    "adminQueryGroup": "Admin",
+    "adminQueryGroup": "admin",
     "verificationBucketName": "deltaauthverificationbucket",
     "authRoleArn": {
         "Fn::GetAtt": [

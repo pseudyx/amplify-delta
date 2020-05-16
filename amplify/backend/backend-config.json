@@ -10,7 +10,7 @@
 			"providerPlugin": "awscloudformation",
 			"service": "Lambda"
 		},
-		"AdminQueries2b544908": {
+		"AdminQueriesf702297d": {
 			"service": "Lambda",
 			"providerPlugin": "awscloudformation",
 			"build": true,
@@ -81,7 +81,7 @@
 				},
 				{
 					"category": "function",
-					"resourceName": "AdminQueries2b544908",
+					"resourceName": "AdminQueriesf702297d",
 					"attributes": [
 						"Arn",
 						"Name"

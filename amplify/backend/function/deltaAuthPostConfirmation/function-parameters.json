@@ -12,5 +12,5 @@
     "triggerTemplate": "PostConfirmation.json.ejs",
     "roleName": "deltaAuthPostConfirmation",
     "skipEdit": true,
-    "GROUP": "Legion"
+    "GROUP": "legion"
 }

@@ -17,8 +17,8 @@
     "triggerTemplate": "CustomMessage.json.ejs",
     "roleName": "deltaAuthCustomMessage",
     "skipEdit": true,
-    "REDIRECTURL": "",
-    "EMAILSUBJECT": "Account Confirm",
-    "EMAILMESSAGE": "Account Confirm ",
+    "REDIRECTURL": "/Delta",
+    "EMAILSUBJECT": "Account Confirmation",
+    "EMAILMESSAGE": "Account Confirmed",
     "RESOURCENAME": "resourceName"
 }
