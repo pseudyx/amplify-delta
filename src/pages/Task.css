@@ -1,0 +1,6 @@
+ul.commentList > li .commentAuthor, 
+ul.commentList > li .commentDate
+{
+    font-size: small;
+    color: dimgrey;
+}

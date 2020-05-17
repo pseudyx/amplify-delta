@@ -1,0 +1,72 @@
+.pageContainer{
+    width: 100%;
+    display: table;
+    height: 100%;
+    table-layout: fixed;
+}
+
+.pageContainer.public {   
+    min-height: 100vh;
+    padding-bottom: 144px;
+    padding-top: 152px;
+    margin-top: -152px;
+}
+
+.pageContainer div.mainMenu{
+    display: table-cell;
+    vertical-align: top;
+    background: #001530;
+    width: 240px;
+    position: relative;
+    z-index: 100;
+    box-sizing: border-box;    
+    height: 100vh;
+}
+
+.pageContainer.sidebar div.mainMenu{
+    width: 65px; 
+}
+
+.pageContainer div.mainContent{
+    position: relative;
+    display: table-cell;
+    vertical-align: top;
+    padding: 20px;
+    background: #ffffff;
+    width: 100%;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+}
+
+.publicPage{
+    padding-top: 1vh;
+}
+
+.footer{
+    position: relative;
+  margin-top: -144px;
+  /* negative value of footer height */
+  height: 144px;
+  clear: both;
+}
+
+@media only screen and (max-width: 860px){
+    .pageContainer {
+        padding-left: 0;
+        display: block;
+    }
+
+    .pageContainer div.mainMenu {
+        position: relative;
+        width: 100vw;
+        min-height: 0px !important;
+        display: block;
+        height: auto;
+    }
+
+    .pageContainer div.mainContent {
+        min-height: 0 !important;
+        display: block;
+    }
+}

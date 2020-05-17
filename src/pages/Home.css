@@ -1,0 +1,169 @@
+section{
+    padding: 40px 0;
+}
+
+.headerBack{
+    background-color: #001530 ;
+    background-image: linear-gradient(141deg, #010b0f 0%, #001530 70%, #010b0f 100%);
+}
+
+section.header{
+    background: url('/img/circuit-bg2.jpg') 0 -160px repeat;
+    background-size: 100%;
+    color: #ccc;
+}
+
+section.header#home{
+    transition: height 1s;
+}
+
+section.header#home {
+    height: auto;
+}
+
+.Delta-logo {
+    position: relative;
+    height: 30vh;
+    pointer-events: none;
+}
+
+section.header .callout {
+    width: 50%;
+}
+
+.callout .title {
+    border-bottom: 1px solid;
+}
+
+.callout .title h1 {
+    font-size: 9vmin;
+    
+}
+.callout .title h2 {
+    font-size: 3.5vmin;
+    
+}
+
+section#menu{
+    padding: 0;
+}
+
+.scroll section#menu{
+    position: fixed;
+    top: 0px;
+    width: 100vw;
+    z-index: 100;
+}
+
+.top section#menu .navbar-brand{
+    display: none;
+}
+
+.scroll section#menu .navbar-brand{
+    display: block;
+}
+
+.quote#homeQuote{
+    text-align: center;
+}
+
+.quote .text{
+    font-style: italic;
+    font-weight: bolder;
+    font-family: serif;
+    font-size: 3.8vmin;
+}
+
+.sectionBottom{
+    width: 100%;
+    height: 40px;
+    overflow: hidden;
+}
+
+.sectionBottom::after{
+    content: '';
+    width: 40px;
+    height: 40px;
+    margin: 0 auto;
+    display: block;
+    transform: rotate(45deg);
+    position: relative;
+    top:-50%;
+}
+
+.sectionBottom.headerBlock::after{
+    background: #001530;
+}
+
+.quote {
+    /*width: 40vw;*/
+    margin: 0 auto;
+}
+
+.quote .quo{
+    font-size: 6vmin;
+    font-family: 'Times New Roman', Times, serif;
+}
+
+.quote .author{
+    font-size: 3vmin;
+    font-weight: lighter;
+    display: block;
+}
+.quote .author::before{
+    font-weight: lighter;
+    content: '-';
+}
+
+.sectionBottom.hawkingBlock{
+    background: #0d6486;
+}
+
+.sectionBottom.hawkingBlock::after{
+    background: #fff;
+}
+
+section.about{
+    background: #0d6486;
+}
+
+.about p, .about i {
+    font-weight: 500;
+}
+
+.sectionBottom.aboutBlock{
+    background: #0d6486;
+    background-image: linear-gradient(-1deg, #fff 49%, #0d6486 50%);
+}
+
+section#contact {
+    margin-bottom: 144px;
+}
+
+section.footer{
+    background: #010b0f;
+    color: #ccc;
+    text-align: center;
+}
+
+@media only screen and (max-width: 800px) {
+    .Delta-logo {
+        height: auto;
+        width: 40%;   
+    }
+}
+
+@media only screen and (max-width: 770px) {
+    .Delta-logo {
+        display: none;
+    }
+
+    .callout{
+        width: 100% !IMPORTANT;
+        border: none !IMPORTANT;
+        text-align: center !IMPORTANT;
+    }
+    .callout .title{
+        border: none !IMPORTANT;
+    }
+}
