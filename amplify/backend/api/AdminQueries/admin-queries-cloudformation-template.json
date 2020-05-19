@@ -22,15 +22,15 @@
           
           
         
-          "functionAdminQueries52e22253Arn": {
+          "functionAdminQueries5b255870Arn": {
             "Type": "String",
-            "Default": "functionAdminQueries52e22253Arn"
+            "Default": "functionAdminQueries5b255870Arn"
           },
         
           
-          "functionAdminQueries52e22253Name": {
+          "functionAdminQueries5b255870Name": {
             "Type": "String",
-            "Default": "functionAdminQueries52e22253Name"
+            "Default": "functionAdminQueries5b255870Name"
           }
         
           
@@ -176,7 +176,7 @@
                                 ":lambda:path/2015-03-31/functions/",
                                 {
                                     
-                                    "Ref": "functionAdminQueries52e22253Arn"
+                                    "Ref": "functionAdminQueries5b255870Arn"
                                 },
                                 "/invocations"
                               ]
@@ -268,7 +268,7 @@
         "Properties": {
             "FunctionName": 
                 {
-                  "Ref": "functionAdminQueries52e22253Name"
+                  "Ref": "functionAdminQueries5b255870Name"
                 },
                 
                 "Action": "lambda:InvokeFunction",
