@@ -6,8 +6,8 @@ export const AuthRoute = ({ component: Component, ...rest }) =>  (
     <Route {...rest} render={props => (
         (rest.private) ? 
         (rest.isAuthenticated)
-        ? <Layout {...rest}><Component {...props} userProfile={rest.userProfile} /></Layout>
+        ? <Layout {...rest}><Component {...props} /></Layout>
         : <Redirect to={{ pathname: '/login', state: { from: props.location } }} />
-        : <Layout isAuthenticated={rest.isAuthenticated}><Component {...props} userHasAuthenticated={rest.userHasAuthenticated} isAuthenticated={rest.isAuthenticated} /></Layout>
+        : <Layout isAuthenticated={rest.isAuthenticated}><Component {...props} isAuthenticated={rest.isAuthenticated} /></Layout>
     )} />
 )

@@ -1,10 +1,10 @@
 {
     "items": [ 
         { "name": "Dashboard", "icon": "monitor", "link": "/Delta", "groups": ["*"] },
-        { "name": "Tasks", "icon": "clipboard", "link": "/Tasks", "groups": ["Legion"], "sub":[
-            { "name": "New Task", "link": "/Tasks/new", "groups": ["Legion"] }
+        { "name": "Tasks", "icon": "clipboard", "link": "/Tasks", "groups": ["legion"], "sub":[
+            { "name": "New Task", "link": "/Tasks/new", "groups": ["legion"] }
         ] },
-        { "name": "Legion", "icon": "users", "link": "/Legion", "groups": ["Legion"] }
+        { "name": "Legion", "icon": "users", "link": "/Legion", "groups": ["legion"] }
 
     ]
 }

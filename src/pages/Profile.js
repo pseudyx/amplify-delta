@@ -2,7 +2,7 @@ import * as React from 'react';
 import { connect } from 'react-redux';
 import { Form, FormGroup, Input, Label, Button, FormText, Row, Col, Progress } from 'reactstrap';
 import { Storage } from 'aws-amplify';
-import ProfileSvc from '../services/profileService';
+import ProfileSvc from '../store/repo/profileService';
 
 
 
@@ -25,6 +25,7 @@ class ProfilePage extends React.Component{
         }
 
         this.handleChange = this.handleChange.bind(this);
+        this.handleSubmit = this.handleSubmit.bind(this);
     }
 
     async componentWillMount(){

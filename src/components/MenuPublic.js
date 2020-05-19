@@ -5,6 +5,7 @@ import {
   NavbarToggler,
   NavbarBrand,
   Nav,
+  NavItem,
   NavLink,
   NavbarText
 } from 'reactstrap';
@@ -14,7 +15,7 @@ const MenuPublic = (props) => {
 
   const toggle = () => setIsOpen(!isOpen);
 
-  homeLinks = () => {
+  const homeLinks = () => {
       return (
         <React.Fragment>
           <NavItem><NavLink href="#about">About</NavLink></NavItem>
@@ -26,7 +27,7 @@ const MenuPublic = (props) => {
   return (
     <div>
       <Navbar color="faded" dark expand="md">
-        <NavbarBrand href="/"><img src="/delta_logo_sm.svg" width="100" /></NavbarBrand>
+        <NavbarBrand href={(props.home) ? "#banner" : "/"}><img src="/delta_logo_sm.svg" width="100" /></NavbarBrand>
         <NavbarToggler onClick={toggle} />
         <Collapse isOpen={isOpen} navbar>
           <Nav className="mr-auto" navbar>

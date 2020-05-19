@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
+import { connect } from "react-redux";
 import { Link } from 'react-router-dom';
 import { Dropdown, DropdownMenu, DropdownToggle } from 'reactstrap';
+import { userActions } from '../store/userStore'
 import './profileBadge.css'
 
 const ProfileBadge = (props) => {
@@ -15,18 +17,23 @@ const ProfileBadge = (props) => {
             aria-expanded={dropdownOpen}
         >
        
-       {props.name} <img src={image} alt="" className="img-circle" height="44" width="44" />
+       {props.user?.name} <img src={image} alt="" className="img-circle" height="44" width="44" />
       
         </DropdownToggle>
         <DropdownMenu right>
             <ul>
                 <li onClick={toggle}><Link to="profile"><i className={"icon-vcard"}></i> Edit Profile</Link></li>
                 <li onClick={toggle}><Link to="notes"><i className={"icon-doc-text"}></i> Notes</Link></li>
-                <li onClick={toggle}><a onClick={props.signout}><i className={"icon-logout"}></i> Logout</a></li>
+                <li onClick={toggle}><a onClick={props.logout}><i className={"icon-logout"}></i> Logout</a></li>
             </ul>
         </DropdownMenu>
         </Dropdown>
     );      
 }
 
-export default ProfileBadge;
+const mapState = state => {
+    const { user } = state.user;
+    return { user }
+  }
+
+export default connect(mapState, userActions)(ProfileBadge)

@@ -1,0 +1,42 @@
+type Task
+  @model
+  @auth(rules: [
+      {allow: groups, groups: ["legion"], queries: null}
+    ])
+{
+  id: ID!
+  title: String!
+  description: String
+  status: String
+  createdAt: String
+  author: String!
+  comments: [Comment] @connection(name: "TaskComments")
+}
+type Comment 
+ @model
+ @auth(rules: [
+    {allow: groups, groups: ["legion"], mutations: [create, update], queries: null}
+    {allow: owner, mutations:[delete], queries: null}
+  ])
+{
+  id: ID!
+  content: String
+  createdAt: String
+  author: String!
+  task: Task @connection(name: "TaskComments")
+}
+type Profile
+@model
+@auth(rules: [
+  {allow: owner},
+  {allow: groups, groups: ["legion"], mutations: null, queries: [get,list]}
+  {allow: groups, groups: ["admin"], mutations: [create,update], queries: [get,list]}
+])
+@key(fields: ["userId"])
+{
+  userId: ID!
+  name: String!
+  role: String
+  company: String
+  joined: String!
+}

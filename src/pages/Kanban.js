@@ -2,31 +2,33 @@ import * as React from 'react';
 import { connect } from 'react-redux';
 import { Row, Col, Container } from 'reactstrap';
 import { Link } from 'react-router-dom';
-
-import TaskSvc from '../services/taskService';
+import { taskActions } from '../store/taskStore';
 import TaskCard from '../components/TaskCard';
 
 
 class KanbanPage extends React.Component{
     constructor(props) {
-        super(props);
-      
-        this.state = {
-            taskList: [],
-            statusList: ["Backlog","In Progress","In Review", "Complete"]
-        }
-        
-    }
+        super(props);        
 
-    async componentWillMount(){
-        
-        TaskSvc.listTasks().then((res) => {
-            this.setState({
-                taskList: res.data.listTasks.items
-            });
-        }).catch();
-    
+        this.state = {
+            limit: 10,
+            nextToken: null,
+            statusList: [],
+            tasks: []
+        }
+
+        this.props.getTasks(this.state.limit, this.state.nextToken);
     }
+/*
+    static getDerivedStateFromProps(props, state) {
+        return {
+            statusList: props.statusList,
+            tasks: props.tasks,
+            nextToken: props.nextToken
+        };
+    }
+*/
+
 
     allowDrop = (e) => {
         e.preventDefault();
@@ -38,9 +40,7 @@ class KanbanPage extends React.Component{
         var status = e.target.querySelector('.statusLane').textContent;
         
         e.target.appendChild(document.getElementById(data));
-        TaskSvc.updateTaskStatus(status, data).then((resp) => {
-            console.log(resp);
-        })
+        this.props.updateTaskStatus(data, status);
     }
 
     renderKanban(){
@@ -48,10 +48,10 @@ class KanbanPage extends React.Component{
                 <Container>
                     <Link to="tasks/new">New</Link>
                 <Row>
-                {this.state.statusList.map((status, i) => { return (
+                {this.props.statusList.map((status, i) => { return (
                     <Col key={i} onDragOver={this.allowDrop} onDrop={this.drop}>
                         <div className="statusLane">{status}</div>
-                    {this.state.taskList.map((task) => {
+                    {this.props.tasks.map((task) => {
                         if(task.status === status){
                             return <TaskCard title={task.title} description={task.description} author={task.author} id={task.id} key={task.id} />
                         }
@@ -74,4 +74,15 @@ class KanbanPage extends React.Component{
 
 }
 
-export default connect()(KanbanPage);
+const mapState = state => {
+    const {tasks, nextToken, statusList, taskDispatch, error } = state.task;
+    return {
+        statusList,
+        taskDispatch,
+        tasks,
+        nextToken,
+        error
+    }
+  }
+
+export default connect(mapState, taskActions)(KanbanPage);

@@ -8,7 +8,7 @@ section{
 }
 
 section.header{
-    background: url('/img/circuit-bg2.jpg') 0 -160px repeat;
+    background: url('/img/circuit-bg.jpg') 0 -160px repeat;
     background-size: 100%;
     color: #ccc;
 }

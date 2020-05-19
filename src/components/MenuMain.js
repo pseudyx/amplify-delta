@@ -1,16 +1,14 @@
 import * as React from 'react';
+import { connect } from "react-redux";
 import { Link } from "react-router-dom";
 import Menu from '../store/menu.json'
 import './Menu.css'
 
 
-export default class MenuMain extends React.Component{
+class MenuMain extends React.Component{
     constructor(props) {
         super(props);
 
-        this.state = {
-          userProfile: this.props.userProfile
-        }
       }     
 
       subMenuToggle = (e) => {
@@ -52,7 +50,7 @@ export default class MenuMain extends React.Component{
               var hasSub = (item.sub !== null && item.sub !== undefined);
               if(checkGroups(item.groups, userProfile.groups)){
                 return (
-                  <li className={`root-level ${hasSub ? "hasSub" : ""}`} onClick={this.subMenuToggle}>
+                  <li className={`root-level ${hasSub ? "hasSub" : ""}`} onClick={this.subMenuToggle} key={item.link}>
                     <Link to={item.link}>
                     <i className={`icon-${item.icon}`}></i>
                     <span>{item.name}</span>
@@ -69,7 +67,7 @@ export default class MenuMain extends React.Component{
         return (sub) ? (
             <ul className="subMenu">
               {sub.map((item) => {
-                return(<li><Link to={item.link}><span>{item.name}</span></Link></li>);
+                return(<li key={item.link}><Link to={item.link}><span>{item.name}</span></Link></li>);
               })}
             </ul>
           ) : null;
@@ -91,7 +89,7 @@ export default class MenuMain extends React.Component{
                     <div className={`hamburger closed`} onClick={this.handleMobileMenu}></div>
                   </div>
                 </header>
-                {this.rootMenu(Menu.items, this.state.userProfile)}
+                {this.rootMenu(Menu.items, this.props.user)}
               </div>
           );
       }
@@ -101,3 +99,9 @@ const checkGroups = (allowdGroups, inGroups) => {
   if(allowdGroups.includes("*")) return true;
   return (inGroups) ? allowdGroups.some(group => inGroups.includes(group)) : false;
 }
+
+const mapState = state => {
+  const {user} = state.user;
+  return { user }
+}
+export default connect(mapState)(MenuMain)

@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
-import Clock from '../utils/Clock'
+import Clock from '../store/Clock'
 import './Dashboard.css'
 
 
@@ -12,20 +12,13 @@ class DashboardPage extends React.Component{
             date: Clock.dateString(),
         }
     }
-    
-    componentDidMount() {
-    }
-
-    componentWillUnmount() {
-        
-    }
 
     render(){
         return (
             <React.Fragment>
                 <div className={"well"}>
                 <h1>{this.state.date}</h1>
-                <h2>Welcome {this.props.userProfile?.name}</h2>
+                <h2>Welcome {this.props.user?.name}</h2>
                 </div>
             </React.Fragment>
         );
@@ -34,5 +27,10 @@ class DashboardPage extends React.Component{
 
 }
 
-export default connect()(DashboardPage);
+const mapState = state => {
+    const { user } = state.user;
+    return { user }
+  }
+
+export default connect(mapState)(DashboardPage);
 

@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { Container } from 'reactstrap';
 import MainMenu from './MenuMain';
-import DeltaMenu from './DeltaMenu';
+import TopMenu from './MenuSecondary';
 import Menu from './MenuPublic';
 import './Layout.css'
 
@@ -28,7 +28,7 @@ export default class Layout extends React.Component {
                         <MainMenu onCollapse={this.handleCollapse} userProfile={this.props.userProfile} />
                     </div>
                     <div className={"mainContent"}>
-                        <DeltaMenu signout={this.props.signout} userProfile={this.props.userProfile} />
+                        <TopMenu signout={this.props.signout} userProfile={this.props.userProfile} />
                         <Container fluid>
                             {this.props.children}
                         </Container>
@@ -44,12 +44,12 @@ export default class Layout extends React.Component {
             <React.Fragment>
                 <section className={"header"}>
                     <Container>
-                        <Menu isAuthenticated={props.isAuthenticated} />
+                        <Menu isAuthenticated={this.props.isAuthenticated} />
                     </Container>
                 </section>
                 <div className={"pageContainer public"}>
                     <Container className={"publicPage"}>
-                        {props.children}
+                        {this.props.children}
                     </Container>
                 </div>
                 <section className={"footer"}>

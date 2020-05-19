@@ -3,7 +3,7 @@ import { Row, Col } from 'reactstrap';
 
 import ProfileBadge from '../badges/profileBadge';
 import ClockBadge from '../badges/clockBadge';
-import ProfileSvc from '../services/profileService';
+import ProfileSvc from '../store/repo/profileService';
 
 import './Menu.css'
 
@@ -12,20 +12,8 @@ export default class DeltaMenu extends React.Component{
         super(props);
 
         this.state = {
-          open: false,
-          profileIcon: ""
+          open: false
         };
-      }
-
-      async componentDidMount() {
-          var profileImg = await ProfileSvc.getProfileImage();
-          this.setState({
-            profileIcon: profileImg
-          });
-      }
-    
-      componentWillUnmount() {
-        
       }
 
       menuToggle = () => {
@@ -40,7 +28,7 @@ export default class DeltaMenu extends React.Component{
         return (
             <Row className="menuSecondary">
               <Col><ul className={"badgeMenu"}><li><ClockBadge /></li></ul></Col>
-              <Col><ul className={"profileMenu"}><li><ProfileBadge name={this.props.userProfile?.name} image={this.state.profileIcon} signout={this.props.signout}/></li></ul></Col>
+              <Col><ul className={"profileMenu"}><li><ProfileBadge /></li></ul></Col>
             </Row>
         );
       }

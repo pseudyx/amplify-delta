@@ -1,24 +1,25 @@
 import React, { Component } from "react";
-import { Auth } from "aws-amplify";
-import { Form, FormGroup, Input, Button, FormText, FormFeedback, Row, Col, Card, CardBody, Container } from "reactstrap";
+import { connect } from "react-redux";
 import { Redirect } from "react-router";
 import { Link } from "react-router-dom";
+import { Form, FormGroup, Input, Button, FormText, FormFeedback, Row, Col, Card, CardBody, Container } from "reactstrap";
+import { userActions } from '../store/userStore'
 
 
-export default class LoginPage extends Component {
+class LoginPage extends Component {
     constructor(props) {
         super(props);
         this.state = {
             email: "",
             password: "",
-            completeSignUp: false,
             validate: {
-                emailState: '',
-                formMessage: ''
+                emailState: ''
               }
         };
 
         this.handleChange = this.handleChange.bind(this);
+        this.handleSubmit = this.handleSubmit.bind(this);
+        this.handleNewPassword = this.handleNewPassword.bind(this);
     }
 
     validateEmail(e) {
@@ -43,46 +44,15 @@ export default class LoginPage extends Component {
 
     handleSubmit = async (e) => {
         e.preventDefault();
-        try{
-            const user = await Auth.signIn(this.state.email, this.state.password);
-            if (user.challengeName === 'NEW_PASSWORD_REQUIRED') {
-
-                this.setState({
-                    user: user,
-                    completeSignUp: true
-                });
-    
-            } else {
-                this.completeSignIn();
-            }
-            
-        } catch (e){
-            console.log(e);
-            this.setState({
-                validate: {
-                    formMessage: e.message
-                  }
-            })
-        }
+        this.props.login(this.state.email, this.state.password);
     }
 
-    handleNewPassword = async () => {
-        await Auth.completeNewPassword(
-            this.state.user,              // the Cognito User Object
-            this.state.password,       // the new password
-        );
-
-        this.completeSignIn();
+    handleNewPassword = async (e) => {
+        e.preventDefault();
+        this.props.completeNewPassword(this.props.user, this.state.password);
     }
 
-    completeSignIn = () => {
-        
-        //const session = await Auth.currentSession();
-        //window.sessionStorage.setItem("session", JSON.stringify(session));
 
-        this.props.userHasAuthenticated(true);
-        this.props.history.push("/delta");
-    }
 
     passwordForm(password) {
         return (
@@ -137,7 +107,7 @@ export default class LoginPage extends Component {
                             onChange={this.handleChange}
                         />
                     </FormGroup>
-                    <FormGroup><FormText>{this.state.validate.formMessage}</FormText></FormGroup>
+                    <FormGroup><FormText>{this.props.error?.message}</FormText></FormGroup>
                     <Button>
                     Login
                     </Button>  
@@ -146,7 +116,7 @@ export default class LoginPage extends Component {
     }
 
     render() {
-        const { email, password, completeSignUp } = this.state;
+        const { email, password } = this.state;
 
         if(this.props.isAuthenticated){
             return <Redirect to="/Delta" />
@@ -157,7 +127,7 @@ export default class LoginPage extends Component {
                     <Col sm={12} md={7}>
                         <Card>
                             <CardBody>
-                                {(completeSignUp) ? this.passwordForm(password) : this.loginForm(email, password)}
+                                {(this.props.challengePassword) ? this.passwordForm(password) : this.loginForm(email, password)}
                             </CardBody>
                         </Card>
                     </Col>
@@ -176,3 +146,16 @@ export default class LoginPage extends Component {
        
     }
 }
+
+const mapState = state => {
+    const {user, isAuthenticated, challengePassword, loginDispatch, error } = state.user;
+    return {
+        isAuthenticated,
+        loginDispatch,
+        challengePassword,
+        error,
+        user
+    }
+  }
+
+export default connect(mapState, userActions)(LoginPage)

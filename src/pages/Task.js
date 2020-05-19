@@ -1,8 +1,8 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
-import {  Button, Container, Form, FormGroup, Label, Input, Row, Col, Jumbotron, ListGroup, ListGroupItem } from 'reactstrap';
-import TaskSvc from '../services/taskService';
+import { Button, Container, Form, FormGroup, Label, Input, Row, Col, Jumbotron, ListGroup, ListGroupItem } from 'reactstrap';
+import { taskActions } from '../store/taskStore';
 import './Task.css';
 
 
@@ -12,32 +12,32 @@ class TaskPage extends React.Component{
         super(props);
 
         let { id } = this.props.match.params;
-        const { name } = this.props.userProfile;
-
+ 
         this.state = {
            taskId: (this.props.location.pathname.includes("/new")) ? 0 : id,
            isEdit: false,
            setIsEdit: () => this.setState(prev => {return {isEdit: !prev.isEdit}}),
-           name
+           title: '', 
+           status: '', 
+           description: ''
+        }
+
+        if(this.state.taskId !== 0){
+            this.props.getTask(this.state.taskId);
         }
 
         this.handleChange = this.handleChange.bind(this);
+        this.handleSubmit = this.handleSubmit.bind(this);
+        this.handleSubmitComment = this.handleSubmitComment.bind(this);
     }
 
-    componentWillMount() {
-        if(this.state.taskId !== 0){
-            TaskSvc.getTask(this.state.taskId).then((resp) => {
-                var { title, status, description, created } = resp.data.getTask;
-                var comments = resp.data.getTask.comments.items;
-                this.setState({
-                    title,
-                    status,
-                    description,
-                    created,
-                    comments
-                })
-            }).catch();
-        }
+    static getDerivedStateFromProps(props, state) {
+        const {title, status, description } = props.task;
+        return {
+            title,
+            status,
+            description
+        };
     }
 
     handleChange = async (event) => {
@@ -53,16 +53,12 @@ class TaskPage extends React.Component{
         e.preventDefault();
         try{
             var {title, status, description, taskId } = this.state;
-            status = status ?? "Backlog";
+            status = (status !== '') ? status : "Backlog";
             if(taskId !== 0){
-                TaskSvc.updateTask({title, status, description}, taskId).then(() => {
-                    this.props.history.push('/tasks');
-                });
+                this.props.updateTask(taskId, {title, status, description});
             }
             else {
-                TaskSvc.createTask({title, status, description}).then(() => {
-                    this.props.history.push('/tasks');
-                });
+                this.props.addTask({title, status, description, author: this.props.user.name});
             }
         } catch (e){
             console.log(e);
@@ -73,23 +69,13 @@ class TaskPage extends React.Component{
     handleSubmitComment = async (e) => {
         e.preventDefault();
         try{
-            const { commentText, taskId, name } = this.state;
+            const { commentText, taskId } = this.state;
             var comment = {
                 content: commentText,
-                author: name
+                author: this.props.user.name
             }
             if(commentText !== null && commentText !== undefined && commentText !== ""){
-                TaskSvc.createComment(comment, taskId).then((resp) => {
-                    this.setState(prev => {
-                        
-                        var cmnts = prev.comments
-                        cmnts.push(resp.data.createComment);
-
-                        return {
-                        comments: cmnts
-                        }
-                    })
-                }).catch();
+                this.props.addComment(taskId, comment);
             }
         } catch (e){
             console.log(e);
@@ -98,7 +84,7 @@ class TaskPage extends React.Component{
     }
 
     editForm(){
-        var { title, status, description } = this.state;
+        const { title, status, description } = this.state;
         return (
             <Form onSubmit={this.handleSubmit}>
                 <FormGroup row>
@@ -149,7 +135,7 @@ class TaskPage extends React.Component{
         if(this.state.isEdit){
             return this.editForm()
         } else {
-            var { title, status, description, created, comments } = this.state;
+            var { title, status, description } = this.state;
             return(
                 <div>
                 <Jumbotron>
@@ -159,23 +145,22 @@ class TaskPage extends React.Component{
                     <p>{description}</p>
                     <p>Comments:</p>
                     <ListGroup className={"commentList"}>
-                        {comments?.sort((a,b)=>{return new Date(a.created) - new Date(b.created)}).map((comment) => {
-                            return (<ListGroupItem key={comment.id}>
+                        {this.props.comments?.sort((a,b)=>{return new Date(a.createdAt) - new Date(b.createdAt)}).map((comment) => {
+                            return (
+                            <ListGroupItem key={comment.id}>
                                 <Row>
                                     <Col md={10}>
                                 <span className={"commentAuthor"}>{`${comment.author}: `}</span>
                                 </Col>
                                 <Col md={2}>
-                                <span className={"commentDate"}>{comment.created}</span>
+                                <span className={"commentDate"}>{comment.createdAt}</span>
                                 </Col>
                                 </Row>
                                 <Row>
                                     <Col><span>{comment.content}</span></Col>
                                 
                                 </Row>
-                                
-                                
-                                </ListGroupItem>);
+                            </ListGroupItem>);
                         })}
                         <ListGroupItem>
                             <Form onSubmit={this.handleSubmitComment}>
@@ -187,8 +172,6 @@ class TaskPage extends React.Component{
                                     </Col>
                                     <Button>Enter</Button> 
                                 </Row>
-                                
-                                
                             </Form>
                         </ListGroupItem>
                     </ListGroup>
@@ -207,4 +190,15 @@ class TaskPage extends React.Component{
     }
 }
 
-export default connect()(TaskPage);
+
+const mapState = state => {
+    const {task, comments } = state.task;
+    const { user } = state.user;
+    return {
+        user,
+        task, 
+        comments    
+    }
+  }
+
+export default connect(mapState, taskActions)(TaskPage);

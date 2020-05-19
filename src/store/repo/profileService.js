@@ -1,4 +1,4 @@
-import Amplify, { API, graphqlOperation, Auth, Storage } from 'aws-amplify';
+import Amplify, { API, graphqlOperation } from 'aws-amplify';
 import * as queries from '../graphql/queries';
 import * as mutations from '../graphql/mutations';
 import Clock from '../Clock';
@@ -31,7 +31,7 @@ export default class ProfileSvc {
         var joined = Clock.isoTimestamp();
         return API.graphql(graphqlOperation(mutations.createProfile, {input: {userId: userId, name: name, joined: joined}}));
     }
-    */
+    
 
     static async getProfileImage(){
         let profileImg = sessionStorage.getItem('delta-profile-image');
@@ -43,5 +43,5 @@ export default class ProfileSvc {
             return profileImg;
         }
         
-    }
+    }*/
 }
