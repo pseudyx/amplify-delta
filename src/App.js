@@ -14,8 +14,6 @@ import Kanban from './pages/Kanban';
 import Task from './pages/Task'
 import Legion from './pages/Group';
 
-import './App.css';
-
 class App extends React.Component {
   constructor(props) {
     super(props);

@@ -1,30 +1,4 @@
 {
-	"function": {
-		"deltaAuthCustomMessage": {
-			"build": true,
-			"providerPlugin": "awscloudformation",
-			"service": "Lambda"
-		},
-		"deltaAuthPostConfirmation": {
-			"build": true,
-			"providerPlugin": "awscloudformation",
-			"service": "Lambda"
-		},
-		"AdminQueriesf702297d": {
-			"service": "Lambda",
-			"providerPlugin": "awscloudformation",
-			"build": true,
-			"dependsOn": [
-				{
-					"category": "auth",
-					"resourceName": "deltaAuth",
-					"attributes": [
-						"UserPoolId"
-					]
-				}
-			]
-		}
-	},
 	"auth": {
 		"userPoolGroups": {
 			"service": "Cognito-UserPool-Groups",
@@ -45,23 +19,20 @@
 		"deltaAuth": {
 			"service": "Cognito",
 			"providerPlugin": "awscloudformation",
+			"dependsOn": []
+		}
+	},
+	"function": {
+		"AdminQueries52e22253": {
+			"service": "Lambda",
+			"providerPlugin": "awscloudformation",
+			"build": true,
 			"dependsOn": [
 				{
-					"category": "function",
-					"resourceName": "deltaAuthCustomMessage",
-					"triggerProvider": "Cognito",
+					"category": "auth",
+					"resourceName": "deltaAuth",
 					"attributes": [
-						"Arn",
-						"Name"
-					]
-				},
-				{
-					"category": "function",
-					"resourceName": "deltaAuthPostConfirmation",
-					"triggerProvider": "Cognito",
-					"attributes": [
-						"Arn",
-						"Name"
+						"UserPoolId"
 					]
 				}
 			]
@@ -81,7 +52,7 @@
 				},
 				{
 					"category": "function",
-					"resourceName": "AdminQueriesf702297d",
+					"resourceName": "AdminQueries52e22253",
 					"attributes": [
 						"Arn",
 						"Name"

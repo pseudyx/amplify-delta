@@ -1,7 +1,7 @@
 {
     "identityPoolName": "delta_identitypool",
     "allowUnauthenticatedIdentities": true,
-    "resourceNameTruncated": "deltaA362a99af",
+    "resourceNameTruncated": "deltaAb936d0c8",
     "userPoolName": "delta_userpool",
     "autoVerifiedAttributes": [
         "email"
@@ -19,17 +19,15 @@
     "passwordPolicyCharacters": [],
     "requiredAttributes": [
         "email",
-        "name",
-        "picture",
-        "profile"
+        "name"
     ],
     "userpoolClientGenerateSecret": true,
     "userpoolClientRefreshTokenValidity": 30,
     "userpoolClientWriteAttributes": [
-        "email",
-        "name",
         "picture",
-        "profile"
+        "profile",
+        "email",
+        "name"
     ],
     "userpoolClientReadAttributes": [
         "email",
@@ -37,7 +35,7 @@
         "picture",
         "profile"
     ],
-    "userpoolClientLambdaRole": "deltaA362a99af_userpoolclient_lambda_role",
+    "userpoolClientLambdaRole": "deltaAb936d0c8_userpoolclient_lambda_role",
     "userpoolClientSetAttributes": true,
     "useDefault": "manual",
     "authSelections": "identityPoolAndUserPool",
@@ -48,14 +46,13 @@
     ],
     "userPoolGroups": true,
     "adminQueries": true,
-    "triggers": "{\"CustomMessage\":[\"verification-link\"],\"PostConfirmation\":[\"add-to-group\"]}",
+    "triggers": "{}",
     "hostedUI": false,
     "userPoolGroupList": [
         "admin",
         "legion"
     ],
     "adminQueryGroup": "admin",
-    "verificationBucketName": "deltaauthverificationbucket",
     "authRoleArn": {
         "Fn::GetAtt": [
             "AuthRole",
@@ -71,27 +68,6 @@
     "parentStack": {
         "Ref": "AWS::StackId"
     },
-    "permissions": [
-        "{\"policyName\":\"AddToGroupCognito\",\"trigger\":\"PostConfirmation\",\"effect\":\"Allow\",\"actions\":[\"cognito-idp:AdminAddUserToGroup\",\"cognito-idp:GetGroup\",\"cognito-idp:CreateGroup\"],\"resource\":{\"paramType\":\"!GetAtt\",\"keys\":[\"UserPool\",\"Arn\"]}}"
-    ],
-    "dependsOn": [
-        {
-            "category": "function",
-            "resourceName": "deltaAuthCustomMessage",
-            "triggerProvider": "Cognito",
-            "attributes": [
-                "Arn",
-                "Name"
-            ]
-        },
-        {
-            "category": "function",
-            "resourceName": "deltaAuthPostConfirmation",
-            "triggerProvider": "Cognito",
-            "attributes": [
-                "Arn",
-                "Name"
-            ]
-        }
-    ]
+    "permissions": [],
+    "dependsOn": []
 }
