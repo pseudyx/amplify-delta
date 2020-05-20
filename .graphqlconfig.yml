@@ -1,12 +1,12 @@
 projects:
   deltaGraphQL:
-    schemaPath: src/graphql/schema.json
+    schemaPath: src/store/graphql/schema.json
     includes:
-      - src/graphql/**/*.js
+      - src/store/graphql/**/*.js
     excludes:
       - ./amplify/**
     extensions:
       amplify:
         codeGenTarget: javascript
         generatedFileName: ''
-        docsFilePath: src/graphql
+        docsFilePath: src/store/graphql
