@@ -3,7 +3,6 @@ import { Row, Col } from 'reactstrap';
 
 import ProfileBadge from '../badges/profileBadge';
 import ClockBadge from '../badges/clockBadge';
-import ProfileSvc from '../store/repo/profileService';
 
 import './Menu.css'
 

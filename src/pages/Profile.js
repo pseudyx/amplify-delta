@@ -2,7 +2,7 @@ import * as React from 'react';
 import { connect } from 'react-redux';
 import { Form, FormGroup, Input, Label, Button, FormText, Row, Col, Progress } from 'reactstrap';
 import { Storage } from 'aws-amplify';
-import ProfileSvc from '../store/repo/profileService';
+import ProfileSvc from '../store/repo/userService';
 
 
 
@@ -29,10 +29,10 @@ class ProfilePage extends React.Component{
     }
 
     async componentWillMount(){
-        var profileImg = await ProfileSvc.getProfileImage();
+        /*var profileImg = await ProfileSvc.getProfileImage();
           this.setState({
             image: profileImg
-          });
+          });*/
     }
     
     handleChange = async (event) => {

@@ -49,7 +49,7 @@ class LoginPage extends Component {
 
     handleNewPassword = async (e) => {
         e.preventDefault();
-        this.props.completeNewPassword(this.props.user, this.state.password);
+        this.props.newPassword(this.props.user, this.state.password);
     }
 
 

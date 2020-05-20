@@ -1,6 +1,14 @@
 # amplify-delta
-A demo repo for AWS integrations such as Amplify
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+A demo repo for AWS integrations such as Amplify 
+
+## Design Overview
+This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app) <br />
+And [Amplify JS](https://github.com/aws-amplify/amplify-js) for JS APIs for AWS services managed through Amplify backend. <br />
+With the additions of:
+- [React Redux](https://github.com/reduxjs/react-redux) for redux pattern to implement immutability - [why?](https://blog.isquaredsoftware.com/2017/05/idiomatic-redux-tao-of-redux-part-1/#the-intent-and-design-of-redux)
+- [React Router](https://github.com/ReactTraining/react-router#readme) for componenet switching, ie dynamic routing 
+
+Following a Repository Pattern to abstract the Amplify APIs from the applciation logic, through the Redux store.
 
 ## Available Scripts
 

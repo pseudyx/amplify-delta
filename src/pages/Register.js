@@ -10,13 +10,15 @@ export default class RegisterPage extends Component {
         this.state = {
             email: "",
             password: "",
+            name: "",
+            profile: "",
             validate: {
                 emailState: '',
-                formMessage: ''
               }
         };
 
         this.handleChange = this.handleChange.bind(this);
+        this.handleSubmit = this.handleSubmit.bind(this);
     }
 
     validateEmail(e) {

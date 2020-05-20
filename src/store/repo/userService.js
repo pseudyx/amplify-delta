@@ -1,9 +1,24 @@
-import Amplify, { API, graphqlOperation } from 'aws-amplify';
+import { Auth, API, graphqlOperation } from 'aws-amplify';
 import * as queries from '../graphql/queries';
 import * as mutations from '../graphql/mutations';
 import Clock from '../Clock';
 
-export default class ProfileSvc {
+export default class UserSvc {
+
+    static async login(email, password){
+        return Auth.signIn(email, password);
+    }
+
+    static async logout(){
+        return Auth.signOut();
+    }
+
+    static async newPassword(user, password){
+        return Auth.completeNewPassword(
+            user,          // the Cognito User Object
+            password       // the new password
+        );
+    }
 
     static async getProfile(userId){
             return API.graphql(graphqlOperation(queries.getProfile, {userId}));
@@ -24,6 +39,23 @@ export default class ProfileSvc {
                     company: profile.company
                 }
             }));
+    }
+
+    static async userSession() {
+        try {
+            var userSession = await Auth.currentSession();
+            var payload = userSession.accessToken.decodePayload();
+            var groups = payload["cognito:groups"];
+            var userId = payload.username;
+            
+            var res = await UserSvc.getProfile(userId);
+            var profile = res.data.getProfile;
+            profile.groups = groups;
+            return profile;
+          }
+          catch(e) {
+            throw new Error(e)
+          }
     }
 
     /*

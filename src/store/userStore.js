@@ -1,5 +1,5 @@
-import { Auth } from "aws-amplify";
-import ProfileSvc from './repo/profileService'
+import UserSvc from './repo/userService'
+import { history } from './history';
 
 export const initialState = {
     isAuthenticated: false,
@@ -37,12 +37,11 @@ export const userActions = {
         return async dispatch => {
             dispatch(request({email}));
             
-            Auth.signIn(email, password).then((user) => {
+            UserSvc.login(email, password).then((user) => {
                 if (user.challengeName === 'NEW_PASSWORD_REQUIRED') {
                     dispatch(challenge(user));    
                 } else {
                     userActions.checkSession();
-                    //dispatch(success(user));
                 }
             }).catch((error) => {
                 dispatch(failure(error));
@@ -55,9 +54,9 @@ export const userActions = {
         function success(user) {return { type: actionTypes.LOGIN_SUCCESS, user }}
         function failure(error) {return { type: actionTypes.LOGIN_FAILURE, error }}
     },
-    completeNewPassword: (user, password) => {
+    newPassword: (user, password) => {
         return async dispatch => {
-            Auth.completeNewPassword(
+            UserSvc.newPassword(
                 user,          // the Cognito User Object
                 password       // the new password
             ).then(() => {
@@ -67,7 +66,7 @@ export const userActions = {
     },
     logout: () => {
         return async dispatch => {
-            Auth.signOut().then(() => {
+            UserSvc.logout().then(() => {
                 dispatch(request());
             });
         }
@@ -75,25 +74,12 @@ export const userActions = {
     },
     checkSession: () => {
         return async dispatch => {
-            try {
-                //dispatch(load());
-                var userSession = await Auth.currentSession();
-                var payload = userSession.accessToken.decodePayload();
-                var groups = payload["cognito:groups"];
-                var userId = payload.username;
-                
-                await ProfileSvc.getProfile(userId)
-                .then((res) => {
-                  var profile = res.data.getProfile;
-                  profile.groups = groups;
-                  dispatch(complete(profile));
-                }).catch((error) => {
-                    dispatch(failure(error));
-                });
-              }
-              catch(e) {
-                dispatch(failure(e));
-              }
+            UserSvc.userSession().then((profile) => {
+                dispatch(complete(profile));
+                history.push("/delta");
+            }).catch((error) => {
+                dispatch(failure(error));
+            });
         }
       
         function load() {return { type: actionTypes.SESSION_LOAD }}
@@ -105,7 +91,7 @@ export const userActions = {
         return async dispatch => {
             //dispatch(request(next));
               
-            await ProfileSvc.listProfiles(limit, next)
+            await UserSvc.listProfiles(limit, next)
             .then((res) => {   
                 const { items, nextToken } = res.data.listProfiles;
                 dispatch(success(items, nextToken));
@@ -117,6 +103,10 @@ export const userActions = {
           function request(nextToken){return {type: actionTypes.USER_LIST_REQUEST, nextToken }}
           function success(items, nextToken){return {type: actionTypes.USER_LIST_SUCCESS, items, nextToken }}
           function failure(error){return {type: actionTypes.USER_LIST_FAILURE, error }}
+      },
+      registerUser: (newUser) => {
+
+
       }
 }
 
