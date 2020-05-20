@@ -1,4 +1,4 @@
-import UserSvc from './repo/userService'
+import UserSvc from './repo/userService';
 import { history } from './history';
 
 export const initialState = {
@@ -33,21 +33,26 @@ export const actionTypes = {
 // ----------------
 // BOUND ACTION CREATORS
 export const userActions = {
-    login: (email, password) => {
+    login: (email, password, redirect) => {
         return async dispatch => {
             dispatch(request({email}));
             
-            UserSvc.login(email, password).then((user) => {
+            await UserSvc.login(email, password).then((user) => {
                 if (user.challengeName === 'NEW_PASSWORD_REQUIRED') {
                     dispatch(challenge(user));    
                 } else {
-                    userActions.checkSession();
-                }
+                    UserSvc.userSession().then((profile) => {
+                        dispatch(success(profile));
+                        (redirect) ? history.push(redirect) : history.push('/delta');
+                    }).catch((error) => {
+                        dispatch(failure(error));
+                    });
+                }    
             }).catch((error) => {
                 dispatch(failure(error));
             });
-            
         }
+        
 
         function request(user) {return { type: actionTypes.LOGIN_REQUEST, user }}
         function challenge(user) {return { type: actionTypes.LOGIN_CHALLENGE, user }}
@@ -56,7 +61,7 @@ export const userActions = {
     },
     newPassword: (user, password) => {
         return async dispatch => {
-            UserSvc.newPassword(
+            await UserSvc.newPassword(
                 user,          // the Cognito User Object
                 password       // the new password
             ).then(() => {
@@ -74,9 +79,8 @@ export const userActions = {
     },
     checkSession: () => {
         return async dispatch => {
-            UserSvc.userSession().then((profile) => {
+            await UserSvc.userSession().then((profile) => {
                 dispatch(complete(profile));
-                history.push("/delta");
             }).catch((error) => {
                 dispatch(failure(error));
             });

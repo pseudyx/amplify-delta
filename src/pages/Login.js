@@ -44,7 +44,8 @@ class LoginPage extends Component {
 
     handleSubmit = async (e) => {
         e.preventDefault();
-        this.props.login(this.state.email, this.state.password);
+        const { from } = this.props.location?.state
+        this.props.login(this.state.email, this.state.password, from?.pathname);
     }
 
     handleNewPassword = async (e) => {
@@ -56,7 +57,7 @@ class LoginPage extends Component {
 
     passwordForm(password) {
         return (
-<           Form onSubmit={this.handleNewPassword}>
+            <Form onSubmit={this.handleNewPassword}>
                 <FormGroup>
                 <Input
                     id="newPassword" 

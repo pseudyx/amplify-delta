@@ -38,7 +38,6 @@
 .menuContainer .logo-dash .mobileIcon {
     position: relative;
     float: right;
-    padding: 2px;
     border: 1px solid rgb(100, 100, 100);
     border-radius: 5px;
 }
@@ -55,6 +54,11 @@
 .menuContainer .logo-dash .hamburger{
     position: relative;
     display: block;
+}
+
+.menuContainer .logo-dash .icon-menu {
+    color: #aaabae;
+    font-size: x-large;
 }
 
 .menuContainer ul.menu  {
@@ -160,7 +164,7 @@
 .sidebar .menuContainer .logo-dash .collapseIcon{
     display: block;
     padding: 0;
-    left: 9px;
+    left: 5px;
 }
 
 .sidebar .menuContainer .menu > li.hasSub > a:before {

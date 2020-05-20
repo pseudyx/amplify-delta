@@ -17,14 +17,14 @@ const ProfileBadge = (props) => {
             aria-expanded={dropdownOpen}
         >
        
-       {props.user?.name} <img src={image} alt="" className="img-circle" height="44" width="44" />
+       {props.user?.name} <img src={image} alt="profile" className="img-circle" width="44" />
       
         </DropdownToggle>
         <DropdownMenu right>
             <ul>
                 <li onClick={toggle}><Link to="profile"><i className={"icon-vcard"}></i> Edit Profile</Link></li>
                 <li onClick={toggle}><Link to="notes"><i className={"icon-doc-text"}></i> Notes</Link></li>
-                <li onClick={toggle}><a onClick={props.logout}><i className={"icon-logout"}></i> Logout</a></li>
+                <li onClick={toggle}><a href="#logout" onClick={props.logout}><i className={"icon-logout"}></i> Logout</a></li>
             </ul>
         </DropdownMenu>
         </Dropdown>

@@ -12,10 +12,6 @@ export default class Clock {
         clearTimeout(this.timeout);
     }
 
-    get time(){
-        return Clock.time();
-    }
-
     static time(){
         var today = new Date();
         var h = today.getHours();

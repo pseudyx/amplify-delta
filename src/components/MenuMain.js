@@ -83,10 +83,10 @@ class MenuMain extends React.Component{
                     </a>
                   </div>
                   <div className="collapseIcon">
-                    <div className={`hamburger closed`} onClick={this.props.onCollapse}></div>
+                    <div className={`hamburger closed`} onClick={this.props.onCollapse}><i className={"icon-menu"}></i></div>
                   </div>
                   <div className="mobileIcon">
-                    <div className={`hamburger closed`} onClick={this.handleMobileMenu}></div>
+                    <div className={`hamburger closed`} onClick={this.handleMobileMenu}><i className={"icon-menu"}></i></div>
                   </div>
                 </header>
                 {this.rootMenu(Menu.items, this.props.user)}
