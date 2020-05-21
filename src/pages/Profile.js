@@ -1,40 +1,49 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
 import { Form, FormGroup, Input, Label, Button, FormText, Row, Col, Progress } from 'reactstrap';
-import { Storage } from 'aws-amplify';
-import ProfileSvc from '../store/repo/userService';
-
+import { userActions } from '../store/userStore'
 
 
 class ProfilePage extends React.Component{
     constructor(props) {
         super(props);
 
-        const {userId, name,role,company} = this.props.userProfile;
-
         this.state = {
             image: '/img/no-profile-picture.jpg',
-            userId,
-            name,
-            role,
-            company,
-            validate: {
-                formMessage: ''
-              },
-            upload: 0
+            error: '',
+            upload: 0,
+            userId: '',
+            name: '',
+            role: '',
+            company: '',
         }
 
         this.handleChange = this.handleChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
     }
 
-    async componentWillMount(){
-        /*var profileImg = await ProfileSvc.getProfileImage();
-          this.setState({
-            image: profileImg
-          });*/
+    static getDerivedStateFromProps(props, state) {
+        const {userId, name,role,company, error} = props.user;
+        const notEq = (objA, objB) => {
+            return ( objA !== null 
+            && objA !== undefined
+            && objA !== ''
+            && objA !== objB) ? objA : objB
+        }
+
+        return {
+            userId,
+            name: notEq(state.name, name),
+            role: notEq(state.role, role),
+            company: notEq(state.company, company),
+            error: notEq(state.error, error),
+        };
+
+        
     }
+
     
+  
     handleChange = async (event) => {
         const { target } = event;
         const value = target.type === 'checkbox' ? target.checked : target.value;
@@ -46,16 +55,7 @@ class ProfilePage extends React.Component{
 
     handleSubmit = async (e) => {
         e.preventDefault();
-        try{
-            ProfileSvc.updateProfile(this.state.userId, this.state);
-        } catch (e){
-            console.log(e);
-            this.setState({
-                validate: {
-                    formMessage: e.message
-                  }
-            })
-        }
+        this.props.updateUser(this.state);
     }
 
     editForm() {
@@ -96,7 +96,7 @@ class ProfilePage extends React.Component{
                         onChange={this.handleChange}
                     />
                 </FormGroup>
-                <FormGroup><FormText>{this.state.validate.formMessage}</FormText></FormGroup>
+                <FormGroup><FormText>{this.state.error}</FormText></FormGroup>
                 <Button>Save</Button>  
             </Form>
         );
@@ -105,6 +105,7 @@ class ProfilePage extends React.Component{
     onFileChange = (e) => {
         const file = e.target.files[0];
         
+        /*
         Storage.put(`profile-picture.jpg`, file, {
             level: 'protected',
             contentType: file.type,
@@ -112,6 +113,7 @@ class ProfilePage extends React.Component{
         })
         .then (result => console.log(result))
         .catch(err => console.log(err));
+        */
         
     }
 
@@ -160,4 +162,11 @@ class ProfilePage extends React.Component{
 
 }
 
-export default connect()(ProfilePage);
+const mapState = state => {
+    const { user } = state.user;
+    return {
+        user
+    };
+  }
+
+export default connect(mapState, userActions)(ProfilePage)

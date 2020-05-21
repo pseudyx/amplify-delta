@@ -30,16 +30,29 @@ export default class UserSvc {
     }
 
     static async updateProfile(userId, profile){
-        return API.graphql(graphqlOperation(mutations.updateProfile, 
-            {
-                input: 
+        try{
+            var res = await API.graphql(graphqlOperation(mutations.updateProfile, 
                 {
-                    userId: userId, 
-                    name: profile.name, 
-                    role: profile.role, 
-                    company: profile.company
-                }
-            }));
+                    input: 
+                    {
+                        userId: userId, 
+                        name: profile.name, 
+                        role: profile.role, 
+                        company: profile.company
+                    }
+                }));
+            profile = res.data.updateProfile;
+            var session = JSON.parse(sessionStorage.getItem('deltaUserSession'));
+            session.name = profile.name;
+            session.company = profile.company;
+            session.role = profile.role;
+            sessionStorage.setItem('deltaUserSession', JSON.stringify(session));
+
+            return session;
+        } catch(e){
+            throw new Error(e);
+        }
+        
     }
 
     static async userSession() {

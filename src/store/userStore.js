@@ -26,13 +26,21 @@ export const actionTypes = {
 
     USER_LIST_REQUEST: 'USER_LIST_REQUEST',
     USER_LIST_SUCCESS: 'USER_LIST_SUCCESS',
-    USER_LIST_FAILURE: 'USER_LIST_FAILURE'
+    USER_LIST_FAILURE: 'USER_LIST_FAILURE',
+
+    USER_UPDATE_REQUEST: 'USER_UPDATE_REQUEST',
+    USER_UPDATE_SUCCESS: 'USER_UPDATE_SUCCESS',
+    USER_UPDATE_FAILURE: 'USER_UPDATE_FAILURE'
     
 }
 
 // ----------------
 // BOUND ACTION CREATORS
 export const userActions = {
+    registerUser: (newUser) => {
+
+
+    },
     login: (email, password, redirect) => {
         return async dispatch => {
             dispatch(request({email}));
@@ -115,10 +123,21 @@ export const userActions = {
           function success(items, nextToken){return {type: actionTypes.USER_LIST_SUCCESS, items, nextToken }}
           function failure(error){return {type: actionTypes.USER_LIST_FAILURE, error }}
       },
-      registerUser: (newUser) => {
+      updateUser: (user) => {
+        return async dispatch => { 
+            dispatch(request(user));
+            UserSvc.updateProfile(user.userId, user).then((profile) => {
+                dispatch(success(profile));
+            }).catch((error) => {
+                dispatch(failure(error));
+            })
+        }
 
-
+        function request(user){return {type: actionTypes.USER_UPDATE_REQUEST, user }}
+        function success(user){return {type: actionTypes.USER_UPDATE_SUCCESS, user }}
+        function failure(error){return {type: actionTypes.USER_UPDATE_FAILURE, error }}
       }
+      
 }
 
 // ----------------
@@ -172,6 +191,20 @@ export const reducer = (state = initialState, action) => {
             return {
                 error: action.error
             };
+        case actionTypes.USER_UPDATE_REQUEST:
+            return{
+                ...state
+            }
+        case actionTypes.USER_UPDATE_SUCCESS:
+            return {
+                ...state,
+                user: action.user
+            }
+        case actionTypes.USER_UPDATE_FAILURE:
+            return {
+                ...state,
+                error: action.error
+            }
         default:
             return state;
     }
