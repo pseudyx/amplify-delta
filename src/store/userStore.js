@@ -33,16 +33,40 @@ export const actionTypes = {
 
     USER_UPDATE_REQUEST: 'USER_UPDATE_REQUEST',
     USER_UPDATE_SUCCESS: 'USER_UPDATE_SUCCESS',
-    USER_UPDATE_FAILURE: 'USER_UPDATE_FAILURE'
+    USER_UPDATE_FAILURE: 'USER_UPDATE_FAILURE',
+
+    REGISTER_USER_SUCCESS: 'REGISTER_USER_SUCCESS',
+    REGISTER_USER_FAILURE: 'REGISTER_USER_FAILURE',
     
+    CONFIRM_USER_SUCCESS: 'CONFIRM_USER_SUCCESS',
+    CONFIRM_USER_FAILURE: 'CONFIRM_USER_FAILURE'
 }
 
 // ----------------
 // BOUND ACTION CREATORS
 export const userActions = {
-    registerUser: (newUser) => {
+    registerUser: (userRegister) => {
+        return async dispatch => {
+            UserSvc.registerUser(userRegister).then((profile) => {
+                dispatch(success(profile));
+            }).catch((error) => {
+                dispatch(failure(error));
+            });
+        }
 
-
+        function success(user) {return { type: actionTypes.REGISTER_USER_SUCCESS, user }}
+        function failure(error) {return { type: actionTypes.REGISTER_USER_FAILURE, error }}
+    },
+    confirmUser: (userConfirm) => {
+        return async dispatch => {
+            UserSvc.confirmUser(userConfirm).then((profile) => {
+                dispatch(success(profile));
+            }).catch((error)=>{
+                dispatch(failure(error));
+            })
+        }
+        function success(user) {return { type: actionTypes.CONFIRM_USER_SUCCESS, user }}
+        function failure(error) {return { type: actionTypes.CONFIRM_USER_FAILURE, error }}
     },
     login: (email, password, redirect) => {
         return async dispatch => {
@@ -217,6 +241,24 @@ export const reducer = (state = initialState, action) => {
                 ...state,
                 error: action.error
             }
+        case actionTypes.REGISTER_USER_SUCCESS:
+            return {
+                user: action.user,
+                isEdit: true
+            };
+        case actionTypes.REGISTER_USER_FAILURE:
+            return {
+                error: action.error  
+            };
+        case actionTypes.CONFIRM_USER_SUCCESS:
+            return {
+                user: action.user,
+                isEdit: false
+            };
+        case actionTypes.CONFIRM_USER_FAILURE:
+            return {
+                error: action.error
+            };
         default:
             return state;
     }

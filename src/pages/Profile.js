@@ -135,16 +135,6 @@ class ProfilePage extends React.Component{
     onFileChange = (e) => {
         const file = e.target.files[0];
         
-        /*
-        Storage.put(`profile-picture.jpg`, file, {
-            level: 'protected',
-            contentType: file.type,
-            progressCallback: this.uploadProgress
-        })
-        .then (result => console.log(result))
-        .catch(err => console.log(err));
-        */
-        
     }
 
     uploadProgress = (progress) => {

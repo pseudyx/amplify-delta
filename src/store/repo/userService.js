@@ -69,7 +69,7 @@ export default class UserSvc {
 
     static async userSession() {
         try {
-
+            //TODO: add create profile on initial sign in.
             const session = JSON.parse(sessionStorage.getItem('deltaUserSession'));
 
             if(!session) {
@@ -80,9 +80,9 @@ export default class UserSvc {
                 var profileLink = payload.profile
                 
                 var res = await UserSvc.getProfile(userId);
-                var profile = res.data.getProfile;
-                profile.groups = groups;
+                var profile = res.data.getProfile ?? {name: payload.name, userId: payload.userSub};
                 profile.profile = profileLink;
+                if (groups) profile.groups = groups;
 
                 sessionStorage.setItem('deltaUserSession', JSON.stringify(profile));
 
@@ -97,6 +97,43 @@ export default class UserSvc {
             throw new Error(e)
           }
     }
+    
+    static async registerUser(userRegister) {
+        try {
+            var {email, password, name, profile} = userRegister;
+
+            const result = await Auth.signUp({
+                username: email,
+                password,
+                attributes: {
+                    email,          
+                    name,
+                    profile
+                }
+            });
+
+            return result.user;
+
+        } catch (error) {
+            throw error;
+        }
+    }
+
+    static async confirmUser(userConfirm) {
+        try{
+            var result = await Auth.confirmSignUp(userConfirm.username, userConfirm.code);
+
+            var joined = Clock.isoTimestamp();
+            var resp = await API.graphql(graphqlOperation(mutations.createProfile, {input: {userId: result.userSub, name: userConfirm.name, joined: joined}}));
+
+            return resp.data.createProfile;
+
+        } catch (error){
+
+        }
+    }
+
+
 
     /*
     static async createProfile(userId, name){
@@ -104,6 +141,15 @@ export default class UserSvc {
         return API.graphql(graphqlOperation(mutations.createProfile, {input: {userId: userId, name: name, joined: joined}}));
     }
     
+ 
+        Storage.put(`profile-picture.jpg`, file, {
+            level: 'protected',
+            contentType: file.type,
+            progressCallback: this.uploadProgress
+        })
+        .then (result => console.log(result))
+        .catch(err => console.log(err));
+       
 
     static async getProfileImage(){
         let profileImg = sessionStorage.getItem('delta-profile-image');
@@ -116,4 +162,5 @@ export default class UserSvc {
         }
         
     }*/
+    
 }

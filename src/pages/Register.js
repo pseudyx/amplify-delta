@@ -1,24 +1,27 @@
 import React, { Component } from "react";
-import { Auth } from "aws-amplify";
+import { connect } from "react-redux";
 import { Form, FormGroup, Label, Input, Button, FormText, FormFeedback, Col } from "reactstrap";
+import { userActions } from '../store/userStore'
 import './Register.css'
 
 
-export default class RegisterPage extends Component {
+class RegisterPage extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            email: "",
-            password: "",
-            name: "",
-            profile: "",
             validate: {
-                emailState: '',
-              }
+                emailState: ''
+              },
+            email: '',
+            password: '',
+            name: '',
+            profile: '',
+            code: ''
         };
 
         this.handleChange = this.handleChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
+        this.handleCodeSubmit = this.handleCodeSubmit.bind(this);
     }
 
     validateEmail(e) {
@@ -43,13 +46,14 @@ export default class RegisterPage extends Component {
 
     handleSubmit = async (e) => {
         e.preventDefault();
-        try{
-           
-            
-        } catch (e){
-            console.log(e);
-           
-        }
+        this.props.registerUser(this.state);
+    }
+
+    handleCodeSubmit = async (e) => {
+        e.preventDefault();
+        var confirmUser = this.props.user;
+        confirmUser.code = this.state.code;
+        this.props.confirmUser(confirmUser);
     }
 
     handleHover = (e) => {
@@ -61,7 +65,7 @@ export default class RegisterPage extends Component {
     }
 
    
-    render() {
+    registerForm() {
         const {email, password, name, profile } = this.state;
 
         return (
@@ -150,11 +154,48 @@ export default class RegisterPage extends Component {
                             </FormText>
                         </Col>
                     </FormGroup>
-                    <FormGroup><FormText>{this.state.validate.formMessage}</FormText></FormGroup>
+                    <FormGroup><FormText>{this.props.error?.message}</FormText></FormGroup>
                     <Button>
                     Register
                     </Button>  
                 </Form>
         );
     }
+
+    confirmForm(password) {
+        const {code} = this.state;
+        return (
+            <Form onSubmit={this.handleCodeSubmit}>
+                <FormGroup>
+                <Input
+                    id="confirmCode" 
+                    name="code"
+                    type="text"
+                    placeholder="Confirmation Code"
+                    value={code}
+                    onChange={this.handleChange}
+                />
+                <FormText>You have been emailed a confirmation code</FormText>
+                </FormGroup>
+                <Button>
+                Confirm
+                </Button>  
+            </Form>
+        );
+    }
+
+    render() {
+        return((this.props.isEdit) ? this.confirmForm() : this.registerForm())
+    }
 }
+
+const mapState = state => {
+    const { error, isEdit, user } = state.user;
+    return {
+        error,
+        isEdit,
+        user
+    }
+  }
+
+export default connect(mapState, userActions)(RegisterPage)
