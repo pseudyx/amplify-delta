@@ -6,6 +6,7 @@ export const initialState = {
     loginDispatch: false,
     challengePassword: false,
     user: {},
+    isEdit: false,
     users: [],
     nextToken: null    
 }
@@ -27,6 +28,8 @@ export const actionTypes = {
     USER_LIST_REQUEST: 'USER_LIST_REQUEST',
     USER_LIST_SUCCESS: 'USER_LIST_SUCCESS',
     USER_LIST_FAILURE: 'USER_LIST_FAILURE',
+
+    TOGGLE_USER_EDIT: 'TOGGLE_USER_EDIT',
 
     USER_UPDATE_REQUEST: 'USER_UPDATE_REQUEST',
     USER_UPDATE_SUCCESS: 'USER_UPDATE_SUCCESS',
@@ -123,6 +126,9 @@ export const userActions = {
           function success(items, nextToken){return {type: actionTypes.USER_LIST_SUCCESS, items, nextToken }}
           function failure(error){return {type: actionTypes.USER_LIST_FAILURE, error }}
       },
+      setIsEdit:() => {
+          return {type: actionTypes.TOGGLE_USER_EDIT }
+      },
       updateUser: (user) => {
         return async dispatch => { 
             dispatch(request(user));
@@ -191,6 +197,11 @@ export const reducer = (state = initialState, action) => {
             return {
                 error: action.error
             };
+        case actionTypes.TOGGLE_USER_EDIT:
+            return {
+                ...state,
+                isEdit: !state.isEdit
+            }
         case actionTypes.USER_UPDATE_REQUEST:
             return{
                 ...state
@@ -198,7 +209,8 @@ export const reducer = (state = initialState, action) => {
         case actionTypes.USER_UPDATE_SUCCESS:
             return {
                 ...state,
-                user: action.user
+                user: action.user,
+                isEdit: !state.isEdit
             }
         case actionTypes.USER_UPDATE_FAILURE:
             return {

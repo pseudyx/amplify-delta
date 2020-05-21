@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
-import { Form, FormGroup, Input, Label, Button, FormText, Row, Col, Progress } from 'reactstrap';
+import { Form, FormGroup, Input, Label, Button, FormText, Row, Col, Progress, Card, CardBody, CardTitle, CardText, CardLink } from 'reactstrap';
 import { userActions } from '../store/userStore'
 import './Profile.css';
 
@@ -39,7 +39,7 @@ class ProfilePage extends React.Component{
             role: notEq(state.role, role),
             company: notEq(state.company, company),
             profile: notEq(state.profile, profile),
-            error: notEq(state.error, error),
+            error: notEq(state.error, error)
         };
     }
 
@@ -62,67 +62,74 @@ class ProfilePage extends React.Component{
     editForm() {
         const {name, role, company, profile} = this.state;
         return (
-            <Form onSubmit={this.handleSubmit}>
-                <FormGroup>
-                    <Label>Name</Label>
-                    <Input
-                        id="name" 
-                        name="name"
-                        type="input"
-                        placeholder="Name"
-                        value={name}
-                        onChange={this.handleChange}
-                        autoFocus
-                    />
-                </FormGroup>
-                <FormGroup>
-                    <Label>Role</Label>
-                    <Input
-                        id="role" 
-                        name="role"
-                        type="input"
-                        placeholder="Role"
-                        value={role}
-                        onChange={this.handleChange}
-                    />
-                </FormGroup>
-                <FormGroup>
-                    <Label>Company</Label>
-                    <Input
-                        id="company" 
-                        name="company"
-                        type="input"
-                        placeholder="Company"
-                        value={company}
-                        onChange={this.handleChange}
-                    />
-                </FormGroup>
-                <FormGroup>
-                    <Label>Profile</Label>
-                    <Input
-                        id="profile" 
-                        name="profile"
-                        type="input"
-                        placeholder="Profile"
-                        value={profile}
-                        onChange={this.handleChange}
-                    />
-                </FormGroup>
-                <FormGroup><FormText>{this.state.error}</FormText></FormGroup>
-                <Button>Save</Button>  
-            </Form>
+            <React.Fragment>
+                <Col sm={12} md={6}>
+                    <Card>
+                        {this.profileImage()}
+                    </Card>
+                </Col>
+                <Col>
+                    <Form onSubmit={this.handleSubmit}>
+                        <FormGroup>
+                            <Label>Name</Label>
+                            <Input
+                                id="name" 
+                                name="name"
+                                type="input"
+                                placeholder="Name"
+                                value={name}
+                                onChange={this.handleChange}
+                                autoFocus
+                            />
+                        </FormGroup>
+                        <FormGroup>
+                            <Label>Role</Label>
+                            <Input
+                                id="role" 
+                                name="role"
+                                type="input"
+                                placeholder="Role"
+                                value={role}
+                                onChange={this.handleChange}
+                            />
+                        </FormGroup>
+                        <FormGroup>
+                            <Label>Company</Label>
+                            <Input
+                                id="company" 
+                                name="company"
+                                type="input"
+                                placeholder="Company"
+                                value={company}
+                                onChange={this.handleChange}
+                            />
+                        </FormGroup>
+                        <FormGroup>
+                            <Label>Profile</Label>
+                            <Input
+                                id="profile" 
+                                name="profile"
+                                type="input"
+                                placeholder="Profile"
+                                value={profile}
+                                onChange={this.handleChange}
+                            />
+                        </FormGroup>
+                        <FormGroup><FormText>{this.state.error}</FormText></FormGroup>
+                        <Button>Save</Button>  
+                    </Form>
+                </Col>
+            </React.Fragment>
         );
     }
 
     onFileClick = () => {
-        
-          var fileBtn = document.getElementById('fileUp'); 
-          fileBtn.dispatchEvent(new MouseEvent('click', {
+        var fileBtn = document.getElementById('fileUp'); 
+        fileBtn.dispatchEvent(new MouseEvent('click', {
             view: window,
             bubbles: true,
             cancelable: true
-          }));
-
+        }));
     }
 
     onFileChange = (e) => {
@@ -149,36 +156,43 @@ class ProfilePage extends React.Component{
         var image = this.state.image;
         return(
             <React.Fragment>
-                <img src={image} alt={this.state.name} width="300" onClick={this.onFileClick} />
+                <img src={image} alt={this.state.name} width="100%" onClick={this.onFileClick} id={"fileUpImg"} />
                 <input id={"fileUp"}
                     type="file" accept='image/jpeg'
                     onChange={this.onFileChange}
                 />
                 {(this.state.upload > 0) ? <Progress value={this.state.upload} /> : ""}
-                
             </React.Fragment>
         );
     }
 
     profileCard() {
+        const {name, role, company, profile} = this.state;
         return (
             <React.Fragment>
-                <Row>
-                    <Col></Col>
-                    <Col>{this.props.userProfile.name}</Col>
-                </Row>
+            <Col sm={12} md={6}>
+            <Card>
+                <CardBody>
+                    <CardTitle>{name} <div className="float-right"><a><i className="icon-pencil" onClick={this.props.setIsEdit}></i></a></div></CardTitle>
+                </CardBody>
+                {this.profileImage()}
+                <CardBody>
+                    <CardText>{role}</CardText>
+                    <CardText>{company}</CardText>
+                    <CardLink href={profile} target="_blank">Public Profile <i className={"icon-popup"}></i></CardLink>
+                </CardBody>
+            </Card>
+            </Col>
+            <Col></Col>
             </React.Fragment>
         );
     }
 
     render(){
         return (
-            <React.Fragment>
-                <Row xs="1" sm="2" lg="3">
-                    <Col>{this.profileImage()}</Col>
-                    <Col>{this.editForm()}</Col>
-                </Row>
-            </React.Fragment>
+            <Row>
+              {(this.props.isEdit) ? this.editForm() : this.profileCard()}
+            </Row>
         );
     }
 
@@ -186,9 +200,10 @@ class ProfilePage extends React.Component{
 }
 
 const mapState = state => {
-    const { user } = state.user;
+    const { user, isEdit } = state.user;
     return {
-        user
+        user,
+        isEdit
     };
   }
 

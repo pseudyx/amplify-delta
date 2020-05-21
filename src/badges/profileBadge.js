@@ -22,9 +22,8 @@ const ProfileBadge = (props) => {
         </DropdownToggle>
         <DropdownMenu right>
             <ul>
-                <li onClick={toggle}><Link to="profile"><i className={"icon-vcard"}></i> Edit Profile</Link></li>
-                <li onClick={toggle}><Link to="notes"><i className={"icon-doc-text"}></i> Notes</Link></li>
-                <li onClick={toggle}><a href="#logout" onClick={props.logout}><i className={"icon-logout"}></i> Logout</a></li>
+                <li onClick={toggle}><Link to="profile"><i className={"icon-vcard"}></i> Profile</Link></li>
+                <li onClick={toggle}><a href="" onClick={props.logout}><i className={"icon-logout"}></i> Logout</a></li>
             </ul>
         </DropdownMenu>
         </Dropdown>
@@ -37,3 +36,7 @@ const mapState = state => {
   }
 
 export default connect(mapState, userActions)(ProfileBadge)
+
+/*TODO: Add notes widget to badge
+<li onClick={toggle}><Link to="notes"><i className={"icon-doc-text"}></i> Notes</Link></li>
+*/
