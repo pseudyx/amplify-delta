@@ -52,7 +52,6 @@ export const userActions = {
                 dispatch(failure(error));
             });
         }
-        
 
         function request(user) {return { type: actionTypes.LOGIN_REQUEST, user }}
         function challenge(user) {return { type: actionTypes.LOGIN_CHALLENGE, user }}
@@ -65,9 +64,17 @@ export const userActions = {
                 user,          // the Cognito User Object
                 password       // the new password
             ).then(() => {
-                userActions.checkSession();
+                UserSvc.userSession().then((profile) => {
+                    dispatch(success(profile));
+                    history.push('/delta');
+                }).catch((error) => {
+                    dispatch(failure(error));
+                });
             });
         }
+
+        function success(user) {return { type: actionTypes.LOGIN_SUCCESS, user }}
+        function failure(error) {return { type: actionTypes.LOGIN_FAILURE, error }}
     },
     logout: () => {
         return async dispatch => {

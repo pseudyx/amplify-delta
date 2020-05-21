@@ -17,6 +17,11 @@ class LoginPage extends Component {
               }
         };
 
+        if(props.isAuthenticated){
+            const { from } = this.props.location?.state
+            (from?.pathname) ? props.history.push(from.pathname) : props.history.push('/delta');
+        }
+
         this.handleChange = this.handleChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
         this.handleNewPassword = this.handleNewPassword.bind(this);

@@ -16,7 +16,9 @@ import Legion from './pages/Group';
 class App extends React.Component {
   constructor(props) {
     super(props);
-    this.props.checkSession();
+    if(!props.isAuthenticated){
+      this.props.checkSession();
+    }
   }
 
   

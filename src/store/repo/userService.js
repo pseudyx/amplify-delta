@@ -10,6 +10,7 @@ export default class UserSvc {
     }
 
     static async logout(){
+        sessionStorage.removeItem('deltaUserSession');
         return Auth.signOut();
     }
 
@@ -43,15 +44,27 @@ export default class UserSvc {
 
     static async userSession() {
         try {
-            var userSession = await Auth.currentSession();
-            var payload = userSession.accessToken.decodePayload();
-            var groups = payload["cognito:groups"];
-            var userId = payload.username;
-            
-            var res = await UserSvc.getProfile(userId);
-            var profile = res.data.getProfile;
-            profile.groups = groups;
-            return profile;
+
+            const session = JSON.parse(sessionStorage.getItem('deltaUserSession'));
+
+            if(!session) {
+                var cognitoSession = await Auth.currentSession();
+                var payload = cognitoSession.accessToken.decodePayload();
+                var groups = payload["cognito:groups"];
+                var userId = payload.username;
+                
+                var res = await UserSvc.getProfile(userId);
+                var profile = res.data.getProfile;
+                profile.groups = groups;
+
+                sessionStorage.setItem('deltaUserSession', JSON.stringify(profile));
+
+                return profile;
+            } else {
+                return session;
+            }
+
+           
           }
           catch(e) {
             throw new Error(e)
