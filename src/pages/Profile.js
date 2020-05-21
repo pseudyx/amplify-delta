@@ -2,7 +2,7 @@ import * as React from 'react';
 import { connect } from 'react-redux';
 import { Form, FormGroup, Input, Label, Button, FormText, Row, Col, Progress } from 'reactstrap';
 import { userActions } from '../store/userStore'
-
+import './Profile.css';
 
 class ProfilePage extends React.Component{
     constructor(props) {
@@ -16,6 +16,7 @@ class ProfilePage extends React.Component{
             name: '',
             role: '',
             company: '',
+            profile: ''
         }
 
         this.handleChange = this.handleChange.bind(this);
@@ -23,7 +24,8 @@ class ProfilePage extends React.Component{
     }
 
     static getDerivedStateFromProps(props, state) {
-        const {userId, name,role,company, error} = props.user;
+        const {userId, name,role,company, profile, error} = props.user;
+        
         const notEq = (objA, objB) => {
             return ( objA !== null 
             && objA !== undefined
@@ -36,10 +38,9 @@ class ProfilePage extends React.Component{
             name: notEq(state.name, name),
             role: notEq(state.role, role),
             company: notEq(state.company, company),
+            profile: notEq(state.profile, profile),
             error: notEq(state.error, error),
         };
-
-        
     }
 
     
@@ -59,7 +60,7 @@ class ProfilePage extends React.Component{
     }
 
     editForm() {
-        const {name, role, company} = this.state;
+        const {name, role, company, profile} = this.state;
         return (
             <Form onSubmit={this.handleSubmit}>
                 <FormGroup>
@@ -96,10 +97,32 @@ class ProfilePage extends React.Component{
                         onChange={this.handleChange}
                     />
                 </FormGroup>
+                <FormGroup>
+                    <Label>Profile</Label>
+                    <Input
+                        id="profile" 
+                        name="profile"
+                        type="input"
+                        placeholder="Profile"
+                        value={profile}
+                        onChange={this.handleChange}
+                    />
+                </FormGroup>
                 <FormGroup><FormText>{this.state.error}</FormText></FormGroup>
                 <Button>Save</Button>  
             </Form>
         );
+    }
+
+    onFileClick = () => {
+        
+          var fileBtn = document.getElementById('fileUp'); 
+          fileBtn.dispatchEvent(new MouseEvent('click', {
+            view: window,
+            bubbles: true,
+            cancelable: true
+          }));
+
     }
 
     onFileChange = (e) => {
@@ -126,8 +149,8 @@ class ProfilePage extends React.Component{
         var image = this.state.image;
         return(
             <React.Fragment>
-                <img src={image} alt={this.state.name} width="300" />
-                <input
+                <img src={image} alt={this.state.name} width="300" onClick={this.onFileClick} />
+                <input id={"fileUp"}
                     type="file" accept='image/jpeg'
                     onChange={this.onFileChange}
                 />

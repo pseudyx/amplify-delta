@@ -29,26 +29,38 @@ export default class UserSvc {
         return API.graphql(graphqlOperation(queries.listProfiles, {limit, nextToken}))
     }
 
-    static async updateProfile(userId, profile){
+    static async updateProfile(userId, userProfile){
         try{
-            var res = await API.graphql(graphqlOperation(mutations.updateProfile, 
-                {
-                    input: 
-                    {
-                        userId: userId, 
-                        name: profile.name, 
-                        role: profile.role, 
-                        company: profile.company
-                    }
-                }));
-            profile = res.data.updateProfile;
-            var session = JSON.parse(sessionStorage.getItem('deltaUserSession'));
-            session.name = profile.name;
-            session.company = profile.company;
-            session.role = profile.role;
-            sessionStorage.setItem('deltaUserSession', JSON.stringify(session));
+           
+            var authUser = await Auth.currentAuthenticatedUser()
+            var status = await Auth.updateUserAttributes(authUser, {name: userProfile.name, profile: userProfile.profile})
+            
+            if(status === "SUCCESS") {
 
-            return session;
+                var res = await API.graphql(graphqlOperation(mutations.updateProfile, 
+                    {
+                        input: 
+                        {
+                            userId: userId, 
+                            name: userProfile.name, 
+                            role: userProfile.role, 
+                            company: userProfile.company
+                        }
+                    }));
+                var user = res.data.updateProfile;
+
+                var session = JSON.parse(sessionStorage.getItem('deltaUserSession'));
+                session.name = user.name;
+                session.company = user.company;
+                session.role = user.role;
+                sessionStorage.setItem('deltaUserSession', JSON.stringify(session));
+
+                return session;
+
+            } else {
+                throw new Error(`Update user attributes fail: ${status}`);
+            }
+
         } catch(e){
             throw new Error(e);
         }
@@ -62,13 +74,15 @@ export default class UserSvc {
 
             if(!session) {
                 var cognitoSession = await Auth.currentSession();
-                var payload = cognitoSession.accessToken.decodePayload();
+                var payload = cognitoSession.idToken.decodePayload();
                 var groups = payload["cognito:groups"];
-                var userId = payload.username;
+                var userId = payload["cognito:username"];
+                var profileLink = payload.profile
                 
                 var res = await UserSvc.getProfile(userId);
                 var profile = res.data.getProfile;
                 profile.groups = groups;
+                profile.profile = profileLink;
 
                 sessionStorage.setItem('deltaUserSession', JSON.stringify(profile));
 
