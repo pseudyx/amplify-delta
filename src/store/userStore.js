@@ -61,6 +61,7 @@ export const userActions = {
         return async dispatch => {
             UserSvc.confirmUser(userConfirm).then((profile) => {
                 dispatch(success(profile));
+                history.push('/delta');
             }).catch((error)=>{
                 dispatch(failure(error));
             })
@@ -133,17 +134,18 @@ export const userActions = {
         function failure(error) {return { type: actionTypes.SESSION_FAILURE, error }}
     
       },
-      getUsers: (limit, next) => {
+      getLegion: (limit, next) => {
         return async dispatch => {
             //dispatch(request(next));
               
             await UserSvc.listProfiles(limit, next)
-            .then((res) => {   
-                const { items, nextToken } = res.data.listProfiles;
-                dispatch(success(items, nextToken));
+            .then((resp) => {   
+                const { profiles, nextToken } = resp;
+                dispatch(success(profiles, nextToken));
             }).catch((resp) => {
                 dispatch(failure(resp));
             });
+
           }
 
           function request(nextToken){return {type: actionTypes.USER_LIST_REQUEST, nextToken }}

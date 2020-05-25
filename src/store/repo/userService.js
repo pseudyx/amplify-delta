@@ -21,12 +21,28 @@ export default class UserSvc {
         );
     }
 
+    static async createProfile(userId, name){
+        var joined = Clock.isoTimestamp();
+        return API.graphql(graphqlOperation(mutations.createProfile, {input: {userId: userId, name: name, joined: joined}}));
+    }
+
     static async getProfile(userId){
             return API.graphql(graphqlOperation(queries.getProfile, {userId}));
     }
 
     static async listProfiles(limit, nextToken){
-        return API.graphql(graphqlOperation(queries.listProfiles, {limit, nextToken}))
+        try{
+            var resp = await API.graphql(graphqlOperation(queries.listProfiles, { filter: {
+                confirmed: {
+                    eq: 'true'
+                }}, limit, nextToken}))
+            return {
+                nextToken: resp.data.listProfiles.nextToken, 
+                profiles: resp.data.listProfiles.items
+            }
+        } catch(e){
+
+        }
     }
 
     static async updateProfile(userId, userProfile){
@@ -44,7 +60,8 @@ export default class UserSvc {
                             userId: userId, 
                             name: userProfile.name, 
                             role: userProfile.role, 
-                            company: userProfile.company
+                            company: userProfile.company,
+                            confirmed: userProfile.confirmed
                         }
                     }));
                 var user = res.data.updateProfile;
@@ -53,6 +70,7 @@ export default class UserSvc {
                 session.name = user.name;
                 session.company = user.company;
                 session.role = user.role;
+                session.confirmed = user.confirmed ?? false;
                 sessionStorage.setItem('deltaUserSession', JSON.stringify(session));
 
                 return session;
@@ -80,7 +98,8 @@ export default class UserSvc {
                 var profileLink = payload.profile
                 
                 var res = await UserSvc.getProfile(userId);
-                var profile = res.data.getProfile ?? {name: payload.name, userId: payload.userSub};
+                res = (res.data.getProfile) ? res : await this.createProfile(userId, payload.name);
+                var profile = (res.data.getProfile) ? res.data.getProfile : res.data.createProfile;
                 profile.profile = profileLink;
                 if (groups) profile.groups = groups;
 
@@ -120,26 +139,11 @@ export default class UserSvc {
     }
 
     static async confirmUser(userConfirm) {
-        try{
-            var result = await Auth.confirmSignUp(userConfirm.username, userConfirm.code);
-
-            var joined = Clock.isoTimestamp();
-            var resp = await API.graphql(graphqlOperation(mutations.createProfile, {input: {userId: result.userSub, name: userConfirm.name, joined: joined}}));
-
-            return resp.data.createProfile;
-
-        } catch (error){
-
-        }
+            return Auth.confirmSignUp(userConfirm.username, userConfirm.code);
     }
-
-
 
     /*
-    static async createProfile(userId, name){
-        var joined = Clock.isoTimestamp();
-        return API.graphql(graphqlOperation(mutations.createProfile, {input: {userId: userId, name: name, joined: joined}}));
-    }
+    
     
  
         Storage.put(`profile-picture.jpg`, file, {

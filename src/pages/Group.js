@@ -12,10 +12,8 @@ class GroupPage extends React.Component{
         this.state = {
             limit: 10
         }
-    }
 
-    componentWillMount(){
-       this.props.getUsers(this.state.limit, this.props.nextToken);
+        this.props.getLegion(this.state.limit, this.props.nextToken);
     }
 
     render(){
@@ -26,19 +24,17 @@ class GroupPage extends React.Component{
                     <tr>
                     <th>#</th>
                     <th>Name</th>
-                    <th>Industry Role</th>
-                    <th>Company</th>
+                    <th>Role</th>
                     <th>Joined</th>
                     </tr>
                 </thead>
                 <tbody>
-                   {this.props.users?.map((profile, i) =>
-                    <tr key={profile.userId}>
+                   {this.props.users?.map((user, i) =>
+                    <tr key={user.userId}>
                        <th scope="row">{i+1}</th>
-                       <td>{profile.name}</td>
-                       <td>{profile.role}</td>
-                       <td>{profile.company}</td>
-                       <td>{profile.joined}</td>
+                       <td>{user.name}</td>
+                       <td>{user.role}</td>
+                       <td>{user.joined}</td>
                     </tr>
                    )}
                 </tbody>

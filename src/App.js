@@ -12,6 +12,7 @@ import Profile from './pages/Profile';
 import Kanban from './pages/Kanban';
 import Task from './pages/Task'
 import Legion from './pages/Group';
+import Users from './pages/Users';
 
 class App extends React.Component {
   constructor(props) {
@@ -35,6 +36,7 @@ class App extends React.Component {
           <AuthRoute exact private path='/tasks/new' component={Task} isAuthenticated={this.props.isAuthenticated} roles={["legion"]} />
           <AuthRoute exact private path='/tasks/:id' component={Task} isAuthenticated={this.props.isAuthenticated} roles={["legion"]} />
           <AuthRoute exact private path='/legion' component={Legion} isAuthenticated={this.props.isAuthenticated} roles={["legion"]} />
+          <AuthRoute exact private path='/users' component={Users} isAuthenticated={this.props.isAuthenticated} roles={["admin"]} />
       </Switch>
     );
   }
