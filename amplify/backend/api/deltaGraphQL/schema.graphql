@@ -38,5 +38,6 @@ type Profile
   name: String!
   role: String
   company: String
+  confirmed: Boolean
   joined: String!
 }

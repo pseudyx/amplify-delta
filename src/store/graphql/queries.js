@@ -107,6 +107,7 @@ export const getProfile = /* GraphQL */ `
       name
       role
       company
+      confirmed
       joined
       createdAt
       updatedAt
@@ -134,6 +135,7 @@ export const listProfiles = /* GraphQL */ `
         name
         role
         company
+        confirmed
         joined
         createdAt
         updatedAt

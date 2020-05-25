@@ -173,6 +173,7 @@ export const createProfile = /* GraphQL */ `
       name
       role
       company
+      confirmed
       joined
       createdAt
       updatedAt
@@ -190,6 +191,7 @@ export const updateProfile = /* GraphQL */ `
       name
       role
       company
+      confirmed
       joined
       createdAt
       updatedAt
@@ -207,6 +209,7 @@ export const deleteProfile = /* GraphQL */ `
       name
       role
       company
+      confirmed
       joined
       createdAt
       updatedAt
