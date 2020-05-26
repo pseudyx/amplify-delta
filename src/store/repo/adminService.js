@@ -55,4 +55,36 @@ export default class AdminSvc {
         return API.get(apiName, path, myInit);
     }
 
+    static async addUserToGroup(username, group){
+        let apiName = 'AdminQueries';
+        let path = '/addUserToGroup';
+        let myInit = {
+            body: {
+                "username" : username,
+                "groupname": group
+            }, 
+            headers: {
+                'Content-Type' : 'application/json',
+                Authorization: `${(await Auth.currentSession()).getAccessToken().getJwtToken()}`
+            } 
+        }
+        return await API.post(apiName, path, myInit);
+    }
+
+    static async removeUserFromGroup(username, group){
+        let apiName = 'AdminQueries';
+        let path = '/removeUserFromGroup';
+        let myInit = {
+            body: {
+                "username" : username,
+                "groupname": group
+            }, 
+            headers: {
+                'Content-Type' : 'application/json',
+                Authorization: `${(await Auth.currentSession()).getAccessToken().getJwtToken()}`
+            } 
+        }
+        return await API.post(apiName, path, myInit);
+    }
+
 }

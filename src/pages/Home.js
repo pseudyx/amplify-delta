@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { Container, Row, Col, Form, FormGroup, Input, Label, Button } from 'reactstrap';
+import { Container, Row, Col, Form, FormGroup, Input, Label, FormText, Button } from 'reactstrap';
+import { publicActions } from '../store/publicStore'
 import Menu from '../components/MenuPublic';
 import logo from '../delta_logo.svg';
 import './Home.css'
@@ -8,11 +9,29 @@ import './Home.css'
 class HomePage extends Component {
   constructor(props) {
       super(props);
+
+      this.state = {
+        name: '',
+        email: '',
+        message: ''
+      }
+
+      window.addEventListener('scroll', this.scrollCheck, false);
   }
 
-  componentWillMount(){
-    window.addEventListener('scroll', this.scrollCheck, false);
-  }
+  static getDerivedStateFromProps(props, state) {
+    
+    if(props.contactSubmit){
+      props.contactFormReset();
+      return {
+        name: '',
+        email: '',
+        message: ''
+      };
+    } else {
+      return state;
+    }
+}  
 
   scrollCheck = (e) => {
     var measure = document.getElementById("banner").offsetHeight;
@@ -24,6 +43,57 @@ class HomePage extends Component {
       var elScroll = document.querySelector(".scroll");
       if(elScroll !== null && elScroll !== undefined) elScroll.className = "top";
     }
+  }
+
+  handleChange = async (event) => {
+    const { target } = event;
+    const value = target.type === 'checkbox' ? target.checked : target.value;
+    const { name } = target;
+    await this.setState({
+      [ name ]: value,
+    });
+  }
+
+  handleSubmit = async (e) => {
+      e.preventDefault();
+      const { name, email, message } = this.state;
+      this.props.sendContactMessage({ name, email, message });
+  }
+
+  contactForm(){
+    const { name, email, message } = this.state;
+    return(<Form onSubmit={this.handleSubmit}>
+            <FormGroup>
+              <Label>Contact Us</Label>
+              <Input 
+                type="input" 
+                id="name" 
+                name="name" 
+                placeholder="Your name" 
+                value={name}
+                onChange={this.handleChange} />
+            </FormGroup>
+            <FormGroup>
+              <Input 
+                type="email" 
+                id="email" 
+                name="email" 
+                placeholder="Your email" 
+                value={email}
+                onChange={this.handleChange} />
+            </FormGroup>
+            <FormGroup>
+              <Input 
+                type="textarea" 
+                id="message" 
+                name="message" 
+                rows="3" 
+                value={message}
+                onChange={this.handleChange}/>
+            </FormGroup>
+            <FormGroup><FormText>{this.props.error?.message}</FormText></FormGroup>
+            <Button>Submit</Button>
+          </Form>);
   }
 
   render(){ 
@@ -82,19 +152,7 @@ class HomePage extends Component {
             <Row>
               <Col></Col>
               <Col>
-              <Form>
-                <FormGroup>
-                  <Label>Contact Us</Label>
-                  <Input type="input" id="contact.name" placeholder="Your name" />
-                </FormGroup>
-                <FormGroup>
-                  <Input type="email" id="contact.email" placeholder="Your email" />
-                </FormGroup>
-                <FormGroup>
-                  <Input type="textarea" id="contact.message" rows="3" />
-                </FormGroup>
-                <Button>Submit</Button>
-              </Form>
+                {this.contactForm()}
               </Col>
             </Row>
           </Container>
@@ -110,4 +168,12 @@ class HomePage extends Component {
   }
 }
 
-export default connect()(HomePage);
+const mapState = state => {
+  const {contactSubmit, error } = state.public;
+  return {
+    contactSubmit,
+    error
+  }
+}
+
+export default connect(mapState, publicActions)(HomePage);

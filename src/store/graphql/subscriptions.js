@@ -190,3 +190,39 @@ export const onDeleteProfile = /* GraphQL */ `
     }
   }
 `;
+export const onCreateContact = /* GraphQL */ `
+  subscription OnCreateContact {
+    onCreateContact {
+      id
+      name
+      email
+      comment
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const onUpdateContact = /* GraphQL */ `
+  subscription OnUpdateContact {
+    onUpdateContact {
+      id
+      name
+      email
+      comment
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const onDeleteContact = /* GraphQL */ `
+  subscription OnDeleteContact {
+    onDeleteContact {
+      id
+      name
+      email
+      comment
+      createdAt
+      updatedAt
+    }
+  }
+`;

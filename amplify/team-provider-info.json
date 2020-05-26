@@ -19,7 +19,7 @@
                     "EMAILMESSAGE": "Account Confirmed"
                 },
                 "deltaAuthPostConfirmation": {
-                    "GROUP": "legion"
+                    "GROUP": "initiate"
                 },
                 "AdminQueries2b544908": {},
                 "deltaAuth": {}

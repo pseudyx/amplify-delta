@@ -6,5 +6,9 @@
     {
         "groupName": "legion",
         "precedence": 2
+    },
+    {
+        "groupName": "initiate",
+        "precedence": 3
     }
 ]

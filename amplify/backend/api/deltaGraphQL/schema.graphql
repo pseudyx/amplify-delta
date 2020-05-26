@@ -41,3 +41,9 @@ type Profile
   confirmed: Boolean
   joined: String!
 }
+type Contact @model{
+  id: ID!
+  name: String
+  email: String
+  comment: String
+}

@@ -149,6 +149,60 @@
         },
      
     
+        "initiateGroup": {
+          "Type" : "AWS::Cognito::UserPoolGroup",
+          "Properties" : {
+              "GroupName" : "initiate",
+              "Precedence" : 3,
+              
+              "RoleArn" : {
+                "Fn::GetAtt": [
+                    "initiateGroupRole",
+                    "Arn"
+                ]
+              },
+              
+              "UserPoolId" : {
+                "Ref": "authdeltaAuthUserPoolId"
+              } 
+            }
+        },
+        
+        "initiateGroupRole": {
+            "Type": "AWS::IAM::Role",
+            "Properties": {
+                "RoleName":{
+                    "Fn::Join": [
+                        "",
+                        [
+                          {
+                            "Ref": "authdeltaAuthUserPoolId"
+                          },
+                          "-initiateGroupRole"
+                        ]
+                    ]
+                },
+                "AssumeRolePolicyDocument": {
+                    "Version": "2012-10-17",
+                    "Statement": [
+                        {
+                            "Sid": "",
+                            "Effect": "Allow",
+                            "Principal": {
+                                "Federated": "cognito-identity.amazonaws.com"
+                            },
+                            "Action": "sts:AssumeRoleWithWebIdentity",
+                            "Condition": {
+                              "StringEquals": {"cognito-identity.amazonaws.com:aud": {"Ref":"authdeltaAuthIdentityPoolId"}},
+                              "ForAnyValue:StringLike": {"cognito-identity.amazonaws.com:amr": "authenticated"}
+                            }
+                        }
+                    ]
+                }
+            }
+        },
+     
+    
     
         "LambdaExecutionRole": {
             "Type": "AWS::IAM::Role",
@@ -364,6 +418,17 @@
             "Value": {
                 "Fn::GetAtt": [
                     "legionGroupRole",
+                    "Arn"
+                ]
+            }
+         
+        },
+        
+      
+        "initiateGroupRole": {
+            "Value": {
+                "Fn::GetAtt": [
+                    "initiateGroupRole",
                     "Arn"
                 ]
             }

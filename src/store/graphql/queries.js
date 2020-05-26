@@ -145,3 +145,34 @@ export const listProfiles = /* GraphQL */ `
     }
   }
 `;
+export const getContact = /* GraphQL */ `
+  query GetContact($id: ID!) {
+    getContact(id: $id) {
+      id
+      name
+      email
+      comment
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const listContacts = /* GraphQL */ `
+  query ListContacts(
+    $filter: ModelContactFilterInput
+    $limit: Int
+    $nextToken: String
+  ) {
+    listContacts(filter: $filter, limit: $limit, nextToken: $nextToken) {
+      items {
+        id
+        name
+        email
+        comment
+        createdAt
+        updatedAt
+      }
+      nextToken
+    }
+  }
+`;

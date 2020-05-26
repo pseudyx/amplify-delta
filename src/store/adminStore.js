@@ -12,6 +12,9 @@ export const actionTypes = {
     ADMIN_USER_LIST_REQUEST: 'ADMIN_USER_LIST_REQUEST',
     ADMIN_USER_LIST_SUCCESS: 'ADMIN_USER_LIST_SUCCESS',
     ADMIN_USER_LIST_FAILURE: 'ADMIN_USER_LIST_FAILURE',
+
+    ADMIN_CONFIRM_INITIATE_SUCCESS: 'ADMIN_CONFIRM_INITIATE_SUCCESS',
+    ADMIN_CONFIRM_INITIATE_FAILURE: 'ADMIN_CONFIRM_INITIATE_FAILURE',
 }
 
 // ----------------
@@ -52,7 +55,25 @@ export const adminActions = {
           function request(nextToken){return {type: actionTypes.ADMIN_USER_LIST_REQUEST, nextToken }}
           function success(items, nextToken){return {type: actionTypes.ADMIN_USER_LIST_SUCCESS, items, nextToken }}
           function failure(error){return {type: actionTypes.ADMIN_USER_LIST_FAILURE, error }}
-      }      
+      },
+      confirmInitiate: (username) => {
+        return async dispatch => {
+
+            await AdminSvc.addUserToGroup(username, 'legion')
+            .then((resp) => {
+                AdminSvc.removeUserFromGroup(username, 'initiate').then((res) => {
+                    dispatch(success(username));
+                }).catch((res)=> {
+                    dispatch(failure(res));
+                })
+            }).catch((resp => {
+                dispatch(failure(resp));
+            }));
+        }
+
+        function success(username){return {type: actionTypes.ADMIN_CONFIRM_INITIATE_SUCCESS, username }}
+        function failure(error){return {type: actionTypes.ADMIN_CONFIRM_INITIATE_FAILURE, error }}
+      }    
 }
 
 // ----------------
@@ -65,6 +86,15 @@ export const reducer = (state = initialState, action) => {
                 nextToken: action.nextToken
             });
         case actionTypes.ADMIN_USER_LIST_FAILURE:
+            return {
+                error: action.error
+            };
+        case actionTypes.ADMIN_CONFIRM_INITIATE_SUCCESS:
+            var users = state.users.filter((user) => { return user.Username !== action.username });
+            return {
+                users: users
+            }
+        case actionTypes.ADMIN_CONFIRM_INITIATE_FAILURE:
             return {
                 error: action.error
             };
