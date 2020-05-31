@@ -5,7 +5,9 @@
             { "name": "New Task", "link": "/Tasks/new", "groups": ["legion"] }
         ] },
         { "name": "Legion", "icon": "users", "link": "/Legion", "groups": ["legion"] },
-        { "name": "Users", "icon": "users", "link": "/Users", "groups": ["admin"] }
+        { "name": "Admin", "icon": "users", "link": "/Users", "groups": ["admin"], "sub":[
+            { "name": "users", "link": "/Users", "groups": ["admin"] }
+        ] }
 
     ]
 }
