@@ -1,0 +1,18 @@
+{
+    "groupPermissionMap": {
+        "admin": [
+            "create/update",
+            "read",
+            "delete"
+        ],
+        "legion": [
+            "create/update",
+            "read",
+            "delete"
+        ],
+        "initiate": [
+            "create/update",
+            "read"
+        ]
+    }
+}
