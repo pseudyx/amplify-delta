@@ -9,8 +9,8 @@ export default class TaskSvc {
             return API.graphql(graphqlOperation(queries.getTask, {id: taskId}));
     }
 
-    static async listTasks(limit, nextToken){
-        return API.graphql(graphqlOperation(queries.listTasks, {limit, nextToken}));
+    static async listTasks(){
+        return API.graphql(graphqlOperation(queries.listTasks));
     }
     
     static async createTask(task){
@@ -29,6 +29,10 @@ export default class TaskSvc {
     static async createComment(taskId, comment){
         var created = Clock.isoTimestamp();
         return API.graphql(graphqlOperation(mutations.createComment, {input: {content: comment.content, author: comment.author, created: created, commentTaskId: taskId}}));
+    }
+
+    static async deleteTask(taskId){
+        return API.graphql(graphqlOperation(mutations.deleteTask, {input: {id: taskId}}));
     }
     
 

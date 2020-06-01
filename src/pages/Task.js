@@ -5,8 +5,6 @@ import { Button, Container, Form, FormGroup, Label, Input, Row, Col, Jumbotron, 
 import { taskActions } from '../store/taskStore';
 import './Task.css';
 
-
-
 class TaskPage extends React.Component{
     constructor(props){
         super(props);
@@ -34,10 +32,16 @@ class TaskPage extends React.Component{
     static getDerivedStateFromProps(props, state) {
         const {title, status, description } = props.task;
         return {
-            title,
-            status,
-            description
+            title: (state.taskId == 0) ? '' : title,
+            status: (state.taskId == 0) ? '' : status,
+            description: (state.taskId == 0) ? '' : description
         };
+    }
+
+    handleDeleteTask = async (e) => {
+        e.preventDefault();
+        var { taskId } = this.state;
+        this.props.deleteTask(taskId);
     }
 
     handleChange = async (event) => {
@@ -87,8 +91,8 @@ class TaskPage extends React.Component{
         const { title, status, description } = this.state;
         return (
             <Form onSubmit={this.handleSubmit}>
-                <FormGroup row>
-                    <Label for="taskTitle" sm={2}>Title *</Label>
+            <Jumbotron>
+            <FormGroup row>
                     <Col sm={4}>
                         <Input 
                             type="text" 
@@ -98,7 +102,6 @@ class TaskPage extends React.Component{
                             value={title}
                             onChange={this.handleChange} />
                     </Col>
-                    <Label for="taskStatus" sm={2}>Status</Label>
                     <Col sm={4}>
                         <Input 
                             type="select" 
@@ -112,10 +115,11 @@ class TaskPage extends React.Component{
                             <option>Complete</option>
                         </Input>
                     </Col>
+                    <Col sm={4}>{(this.state.taskId !== 0) ? <Button color="danger" className="float-right" onClick={this.handleDeleteTask}><i className="icon-trash"></i></Button> : ''}</Col>
                 </FormGroup>
-                <FormGroup row>
-                    <Label for="taskDescription" sm={2}>Description</Label>
-                    <Col sm={10}>
+                    <hr className="my-2" />
+                    <FormGroup row>
+                    <Col sm={12}>
                         <Input 
                             type="textarea" 
                             name="description" 
@@ -125,7 +129,8 @@ class TaskPage extends React.Component{
                             onChange={this.handleChange} />
                     </Col>
                 </FormGroup>
-                <Button>Save</Button>
+                <Button color="primary">Save</Button>
+                </Jumbotron>
             </Form>
         );
     }
@@ -137,10 +142,9 @@ class TaskPage extends React.Component{
         } else {
             var { title, status, description } = this.state;
             return(
-                <div>
                 <Jumbotron>
                 <Button color="primary" className="float-right" onClick={this.state.setIsEdit}><i className="icon-pencil"></i></Button>
-                    <p className="lead"><Link to={`/tasks`}><i className="icon-left-open"></i></Link>{title}</p>
+                    <p className="lead"><Link to={`/tasks`}><i className="icon-left-open"></i></Link><h2>{title}</h2></p>
                     <hr className="my-2" />
                     <p>{description}</p>
                     <p>Comments:</p>
@@ -176,7 +180,6 @@ class TaskPage extends React.Component{
                         </ListGroupItem>
                     </ListGroup>
                 </Jumbotron>
-              </div>
             );
         }
     }

@@ -164,7 +164,8 @@ export const userActions = {
       updateUser: (user) => {
         return async dispatch => { 
             dispatch(request(user));
-            UserSvc.updateProfile(user.userId, user).then((profile) => {
+            UserSvc.updateProfile(user.userId, user)
+            .then((profile) => {
                 dispatch(success(profile));
             }).catch((error) => {
                 dispatch(failure(error));
@@ -175,9 +176,9 @@ export const userActions = {
         function success(user){return {type: actionTypes.USER_UPDATE_SUCCESS, user }}
         function failure(error){return {type: actionTypes.USER_UPDATE_FAILURE, error }}
       },
-      uploadUserPic: (file) => {
+      uploadUserPic: (file, callBack) => {
         return async dispatch => {
-            UserSvc.updateProfilePic(file, userActions.uploadUserPicProgress)
+            UserSvc.updateProfilePic(file, callBack)
             .then((resp) => {
                 dispatch(success());
             }).catch((error) => {
@@ -190,6 +191,9 @@ export const userActions = {
       },
       uploadUserPicProgress: (progress) => {
         return {type: actionTypes.USER_PIC_UPDATE_PROGRESS, progress }
+      },
+      checkUserThumb: () => {
+          UserSvc.checkUserThumb();
       }
       
 }
@@ -290,6 +294,7 @@ export const reducer = (state = initialState, action) => {
                 uploadProgress: prog
             }
         case actionTypes.USER_PIC_UPDATE_SUCCESS:
+            userActions.checkUserThumb();
             return{
                 ...state,
                 uploadProgress: 0

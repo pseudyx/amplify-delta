@@ -8,7 +8,7 @@ import './profileBadge.css'
 const ProfileBadge = (props) => {
     const [dropdownOpen, setDropdownOpen] = useState(false);
     const toggle = () => setDropdownOpen(prevState => !prevState);
-    const image = (props.image !== null && props.image !== undefined && props.image !== "") ? props.image : "/img/no-profile-picture.jpg"
+    const image = props.user.thumb;
     return (
         <Dropdown isOpen={dropdownOpen} toggle={toggle} className={"profileInfo"}>
         <DropdownToggle
@@ -17,7 +17,7 @@ const ProfileBadge = (props) => {
             aria-expanded={dropdownOpen}
         >
        
-       {props.user?.name} <img src={image} alt="profile" className="img-circle" width="44" />
+       {props.user?.name} <img src={image} alt="profile" className="img-circle" width="44" height="44"/>
       
         </DropdownToggle>
         <DropdownMenu right>

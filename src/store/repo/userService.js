@@ -85,12 +85,14 @@ export default class UserSvc {
         
     }
 
-    static async updateProfilePic(file, progressCallback){
+    static async updateProfilePic(file, callBack){
         try{
-            var result = await Storage.put('profile-lg.jpg', file, {
+
+            const session = JSON.parse(sessionStorage.getItem('deltaUserSession'));
+            var result = await Storage.put(`${session.userId}.jpg`, file, {
                 level: 'protected',
                 contentType: file.type,
-                progressCallback: progressCallback
+                progressCallback: callBack
             })   
             return result;
         } catch (error){
@@ -100,11 +102,12 @@ export default class UserSvc {
 
     static async userSession() {
         try {
-            //TODO: add create profile on initial sign in.
             const session = JSON.parse(sessionStorage.getItem('deltaUserSession'));
 
             if(!session) {
                 var cognitoSession = await Auth.currentSession();
+                console.log('userSession:');
+                console.log(cognitoSession);
                 var payload = cognitoSession.idToken.decodePayload();
                 var groups = payload["cognito:groups"];
                 var userId = payload["cognito:username"];
@@ -116,10 +119,15 @@ export default class UserSvc {
                 profile.profile = profileLink;
                 if (groups) profile.groups = groups;
 
+                profile.thumb = await this.getUserThumb(userId);
+                profile.image = await this.getUserPic(userId);
+                
                 sessionStorage.setItem('deltaUserSession', JSON.stringify(profile));
 
                 return profile;
             } else {
+                session.thumb = await this.getUserThumb(session.userId);
+                session.image = await this.getUserPic(session.userId);
                 return session;
             }
 
@@ -129,6 +137,40 @@ export default class UserSvc {
             throw new Error(e)
           }
     }
+
+    static async getUserPic(userId){
+        var imgResp = await fetch(`https://public.deltalegion.net/profile/${userId}-lg.jpg`);
+        if(imgResp.ok){
+            var imgBlob = await imgResp.blob();
+            var imgSrc = URL.createObjectURL(imgBlob);
+            return imgSrc;
+        } else {
+            return '/img/no-profile-picture.jpg';
+        }
+    }
+
+    static async getUserThumb(userId) {
+        var imgResp = await fetch(`https://public.deltalegion.net/profile/${userId}-sm.jpg`);
+        if(imgResp.ok){
+            var imgBlob = await imgResp.blob();
+            var imgSrc = URL.createObjectURL(imgBlob);
+            return imgSrc;
+        } else {
+            return '/img/no-profile-picture.jpg';
+        }
+    }
+
+    static async checkUserPic(){
+        const session = JSON.parse(sessionStorage.getItem('deltaUserSession'));
+        session.thumb = await this.getUserThumb(session.userId);
+        sessionStorage.setItem('deltaUserSession', JSON.stringify(session));
+    }
+
+    static async checkUserPic(){
+        const session = JSON.parse(sessionStorage.getItem('deltaUserSession'));
+        session.image = await this.getUserPic(session.userId);
+        sessionStorage.setItem('deltaUserSession', JSON.stringify(session));
+    } 
     
     static async registerUser(userRegister) {
         try {

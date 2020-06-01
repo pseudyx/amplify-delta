@@ -11,13 +11,11 @@ class KanbanPage extends React.Component{
         super(props);        
 
         this.state = {
-            limit: 10,
-            nextToken: null,
             statusList: [],
             tasks: []
         }
 
-        this.props.getTasks(this.state.limit, this.state.nextToken);
+        this.props.getTasks();
     }
 /*
     static getDerivedStateFromProps(props, state) {

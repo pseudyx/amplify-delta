@@ -24,7 +24,7 @@ class ProfilePage extends React.Component{
     }
 
     static getDerivedStateFromProps(props, state) {
-        const {userId, name,role,company, profile, error, uploadProgress} = props.user;
+        const {userId, image, name,role,company, profile, error } = props.user;
         
         const notEq = (objA, objB) => {
             return ( objA !== null 
@@ -35,12 +35,12 @@ class ProfilePage extends React.Component{
 
         return {
             userId,
+            image,
             name: notEq(state.name, name),
             role: notEq(state.role, role),
             company: notEq(state.company, company),
             profile: notEq(state.profile, profile),
-            error: notEq(state.error, error),
-            upload: uploadProgress
+            error: notEq(state.error, error) 
         };
     }
 
@@ -135,7 +135,7 @@ class ProfilePage extends React.Component{
 
     onFileChange = (e) => {
         const file = e.target.files[0];
-        this.props.uploadUserPic(file);
+        this.props.uploadUserPic(file, this.uploadProgress);
     }
 
     profileImage(){
@@ -147,9 +147,16 @@ class ProfilePage extends React.Component{
                     type="file" accept='image/jpeg'
                     onChange={this.onFileChange}
                 />
-                {(this.state.upload > 0) ? <Progress value={this.state.upload} /> : ""}
+                {(this.state.upload > 0 && this.state.upload < 99) ? <Progress value={this.state.upload} /> : ""}
             </React.Fragment>
         );
+    }
+
+    uploadProgress = (e) => {
+        var prog = (e.loaded/e.total)*100;
+        this.setState({
+            upload: prog
+        })
     }
 
     profileCard() {

@@ -35,7 +35,10 @@ export const actionTypes = {
 
     ADD_COMMENT_REQUEST: 'ADD_COMMENT_REQUEST',
     ADD_COMMENT_SUCCESS: 'ADD_COMMENT_SUCCESS',
-    ADD_COMMENT_FAILURE: 'ADD_COMMENT_FAILURE'
+    ADD_COMMENT_FAILURE: 'ADD_COMMENT_FAILURE',
+
+    TASK_DELETE_SUCCESS: 'TASK_DELETE_SUCCESS',
+    TASK_DELETE_FAILURE: 'TASK_DELETE_FAILURE'
 }
 
 // ----------------
@@ -77,11 +80,11 @@ export const taskActions = {
         function success(task, comments) {return { type: actionTypes.GET_TASK_SUCCESS, task, comments }}
         function failure(error) {return { type: actionTypes.GET_TASK_FAILURE, error }}
     },
-    getTasks: (limit, next) => {
+    getTasks: () => {
         return async dispatch => {
             dispatch(request());
 
-            await TaskSvc.listTasks(limit, next)
+            await TaskSvc.listTasks()
             .then((res) => {
                 const {items, nextToken} = res.data.listTasks;
                 dispatch(success(items, nextToken));
@@ -144,7 +147,20 @@ export const taskActions = {
         function request(comment) {return { type: actionTypes.ADD_COMMENT_REQUEST, comment }}
         function success(comment) {return { type: actionTypes.ADD_COMMENT_SUCCESS, comment }}
         function failure(error) {return { type: actionTypes.ADD_COMMENT_FAILURE, error }}
+    },
+    deleteTask: (taskId) => {
+        return async dispatch => {
+            await TaskSvc.deleteTask(taskId)
+            .then((res) => {
+                dispatch(success(taskId));
+                history.push('/tasks');
+            }).catch((error) => {
+                dispatch(failure(error.message))
+            })
+        }
 
+        function success(taskId) {return { type: actionTypes.TASK_DELETE_SUCCESS, taskId }}
+        function failure(error) {return { type: actionTypes.TASK_DELETE_FAILURE, error }}
     }
 }
 
@@ -199,6 +215,11 @@ export const reducer = (state = initialState, action) => {
         case actionTypes.ADD_COMMENT_SUCCESS:
             return Object.assign({}, state, {
                 comments: [ ...state.comments, action.comment ]
+            })
+        case actionTypes.TASK_DELETE_SUCCESS:
+            var newTasks = state.tasks.filter((task)=>{return task.id !== action.taskId});
+            return Object.assign({}, state, {
+                tasks: newTasks
             })
         default:
             return state;
