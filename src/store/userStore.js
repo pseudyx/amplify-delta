@@ -8,7 +8,8 @@ export const initialState = {
     user: {},
     isEdit: false,
     users: [],
-    nextToken: null    
+    nextToken: null,
+    uploadProgress: 0
 }
 
 // ----------------
@@ -39,7 +40,12 @@ export const actionTypes = {
     REGISTER_USER_FAILURE: 'REGISTER_USER_FAILURE',
     
     CONFIRM_USER_SUCCESS: 'CONFIRM_USER_SUCCESS',
-    CONFIRM_USER_FAILURE: 'CONFIRM_USER_FAILURE'
+    CONFIRM_USER_FAILURE: 'CONFIRM_USER_FAILURE',
+
+    USER_PIC_UPDATE_REQUEST: 'USER_PIC_UPDATE_REQUEST',
+    USER_PIC_UPDATE_PROGRESS: 'USER_PIC_UPDATE_PROGRESS',
+    USER_PIC_UPDATE_SUCCESS: 'USER_PIC_UPDATE_SUCCESS',
+    USER_PIC_UPDATE_FAILURE: 'USER_PIC_UPDATE_FAILURE',
 }
 
 // ----------------
@@ -168,6 +174,21 @@ export const userActions = {
         function request(user){return {type: actionTypes.USER_UPDATE_REQUEST, user }}
         function success(user){return {type: actionTypes.USER_UPDATE_SUCCESS, user }}
         function failure(error){return {type: actionTypes.USER_UPDATE_FAILURE, error }}
+      },
+      uploadUserPic: (file) => {
+          return async dispatch => {
+              UserSvc.updateProfilePic(file, progress)
+                  .then((resp) => {
+                      dispatch(success());
+                  }).catch((error) => {
+                    dispatch(failure(error));
+                  })
+            function progress(progress){return {type: actionTypes.USER_PIC_UPDATE_PROGRESS, progress }}
+            function success(){return {type: actionTypes.USER_PIC_UPDATE_SUCCESS }}
+            function failure(error){return {type: actionTypes.USER_PIC_UPDATE_FAILURE, error }}
+          }
+
+
       }
       
 }
@@ -258,6 +279,20 @@ export const reducer = (state = initialState, action) => {
                 isEdit: false
             };
         case actionTypes.CONFIRM_USER_FAILURE:
+            return {
+                error: action.error
+            };
+        case actionTypes.USER_PIC_UPDATE_PROGRESS:
+            return{
+                ...state,
+                uploadProgress:(action.progress.loaded/action.progress.total)*100
+            }
+        case actionTypes.USER_PIC_UPDATE_SUCCESS:
+            return{
+                ...state,
+                uploadProgress: 0
+            }
+        case actionTypes.USER_PIC_UPDATE_FAILURE:
             return {
                 error: action.error
             };

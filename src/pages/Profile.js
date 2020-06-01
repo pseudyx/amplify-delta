@@ -24,7 +24,7 @@ class ProfilePage extends React.Component{
     }
 
     static getDerivedStateFromProps(props, state) {
-        const {userId, name,role,company, profile, error} = props.user;
+        const {userId, name,role,company, profile, error, uploadProgress} = props.user;
         
         const notEq = (objA, objB) => {
             return ( objA !== null 
@@ -39,7 +39,8 @@ class ProfilePage extends React.Component{
             role: notEq(state.role, role),
             company: notEq(state.company, company),
             profile: notEq(state.profile, profile),
-            error: notEq(state.error, error)
+            error: notEq(state.error, error),
+            upload: uploadProgress
         };
     }
 
@@ -134,12 +135,7 @@ class ProfilePage extends React.Component{
 
     onFileChange = (e) => {
         const file = e.target.files[0];
-        
-    }
-
-    uploadProgress = (progress) => {
-        this.setState({upload:(progress.loaded/progress.total)*100});
-        console.log(`Uploaded: ${progress.loaded}/${progress.total}`);
+        this.props.uploadUserPic(file);
     }
 
     profileImage(){
@@ -190,10 +186,11 @@ class ProfilePage extends React.Component{
 }
 
 const mapState = state => {
-    const { user, isEdit } = state.user;
+    const { user, isEdit, uploadProgress } = state.user;
     return {
         user,
-        isEdit
+        isEdit,
+        uploadProgress
     };
   }
 

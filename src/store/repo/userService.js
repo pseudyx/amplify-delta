@@ -1,4 +1,4 @@
-import { Auth, API, graphqlOperation } from 'aws-amplify';
+import { Auth, API, graphqlOperation, Storage } from 'aws-amplify';
 import * as queries from '../graphql/queries';
 import * as mutations from '../graphql/mutations';
 import Clock from '../Clock';
@@ -85,6 +85,19 @@ export default class UserSvc {
         
     }
 
+    static async updateProfilePic(file, progressCallback){
+        try{
+            var result = await Storage.put('profile-lg.jpg', file, {
+                level: 'protected',
+                contentType: file.type,
+                progressCallback: progressCallback
+            })   
+            return result;
+        } catch (error){
+            throw new Error(error);
+        }
+    }
+
     static async userSession() {
         try {
             //TODO: add create profile on initial sign in.
@@ -144,17 +157,6 @@ export default class UserSvc {
 
     /*
     
-    
- 
-        Storage.put(`profile-picture.jpg`, file, {
-            level: 'protected',
-            contentType: file.type,
-            progressCallback: this.uploadProgress
-        })
-        .then (result => console.log(result))
-        .catch(err => console.log(err));
-       
-
     static async getProfileImage(){
         let profileImg = sessionStorage.getItem('delta-profile-image');
         if(!profileImg){
