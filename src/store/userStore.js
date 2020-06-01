@@ -176,19 +176,20 @@ export const userActions = {
         function failure(error){return {type: actionTypes.USER_UPDATE_FAILURE, error }}
       },
       uploadUserPic: (file) => {
-          return async dispatch => {
-              UserSvc.updateProfilePic(file, progress)
-                  .then((resp) => {
-                      dispatch(success());
-                  }).catch((error) => {
-                    dispatch(failure(error));
-                  })
-            function progress(progress){return {type: actionTypes.USER_PIC_UPDATE_PROGRESS, progress }}
-            function success(){return {type: actionTypes.USER_PIC_UPDATE_SUCCESS }}
-            function failure(error){return {type: actionTypes.USER_PIC_UPDATE_FAILURE, error }}
-          }
+        return async dispatch => {
+            UserSvc.updateProfilePic(file, userActions.uploadUserPicProgress)
+            .then((resp) => {
+                dispatch(success());
+            }).catch((error) => {
+                dispatch(failure(error));
+            })
+        }
 
-
+        function success(){return {type: actionTypes.USER_PIC_UPDATE_SUCCESS }}
+        function failure(error){return {type: actionTypes.USER_PIC_UPDATE_FAILURE, error }}
+      },
+      uploadUserPicProgress: (progress) => {
+        return {type: actionTypes.USER_PIC_UPDATE_PROGRESS, progress }
       }
       
 }
@@ -283,9 +284,10 @@ export const reducer = (state = initialState, action) => {
                 error: action.error
             };
         case actionTypes.USER_PIC_UPDATE_PROGRESS:
+            var prog = (action.progress.loaded/action.progress.total)*100;
             return{
                 ...state,
-                uploadProgress:(action.progress.loaded/action.progress.total)*100
+                uploadProgress: prog
             }
         case actionTypes.USER_PIC_UPDATE_SUCCESS:
             return{
