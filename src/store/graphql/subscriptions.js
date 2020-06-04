@@ -17,7 +17,6 @@ export const onCreateTask = /* GraphQL */ `
           createdAt
           author
           updatedAt
-          owner
         }
         nextToken
       }
@@ -41,7 +40,6 @@ export const onUpdateTask = /* GraphQL */ `
           createdAt
           author
           updatedAt
-          owner
         }
         nextToken
       }
@@ -65,7 +63,6 @@ export const onDeleteTask = /* GraphQL */ `
           createdAt
           author
           updatedAt
-          owner
         }
         nextToken
       }
@@ -93,7 +90,6 @@ export const onCreateComment = /* GraphQL */ `
         updatedAt
       }
       updatedAt
-      owner
     }
   }
 `;
@@ -117,13 +113,12 @@ export const onUpdateComment = /* GraphQL */ `
         updatedAt
       }
       updatedAt
-      owner
     }
   }
 `;
 export const onDeleteComment = /* GraphQL */ `
-  subscription OnDeleteComment($owner: String!) {
-    onDeleteComment(owner: $owner) {
+  subscription OnDeleteComment {
+    onDeleteComment {
       id
       content
       createdAt
@@ -141,12 +136,11 @@ export const onDeleteComment = /* GraphQL */ `
         updatedAt
       }
       updatedAt
-      owner
     }
   }
 `;
 export const onCreateProfile = /* GraphQL */ `
-  subscription OnCreateProfile($owner: String) {
+  subscription OnCreateProfile($owner: String!) {
     onCreateProfile(owner: $owner) {
       userId
       name
@@ -161,7 +155,7 @@ export const onCreateProfile = /* GraphQL */ `
   }
 `;
 export const onUpdateProfile = /* GraphQL */ `
-  subscription OnUpdateProfile($owner: String) {
+  subscription OnUpdateProfile($owner: String!) {
     onUpdateProfile(owner: $owner) {
       userId
       name

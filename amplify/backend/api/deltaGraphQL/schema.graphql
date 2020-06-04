@@ -41,7 +41,14 @@ type Profile
   confirmed: Boolean
   joined: String!
 }
-type Contact @model{
+type Contact @model
+@auth (
+    rules: [
+      { allow: groups, groups: ["admin"], mutations: [delete], queries: [get,list]},
+      { allow: public, operations: [create] }
+    ]
+  )
+{
   id: ID!
   name: String
   email: String

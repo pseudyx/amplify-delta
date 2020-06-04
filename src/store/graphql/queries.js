@@ -17,7 +17,6 @@ export const getTask = /* GraphQL */ `
           createdAt
           author
           updatedAt
-          owner
         }
         nextToken
       }
@@ -68,7 +67,6 @@ export const getComment = /* GraphQL */ `
         updatedAt
       }
       updatedAt
-      owner
     }
   }
 `;
@@ -94,7 +92,6 @@ export const listComments = /* GraphQL */ `
           updatedAt
         }
         updatedAt
-        owner
       }
       nextToken
     }

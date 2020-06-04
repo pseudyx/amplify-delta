@@ -94,7 +94,15 @@
             "providerPlugin": "awscloudformation",
             "output": {
                 "authConfig": {
-                    "additionalAuthenticationProviders": [],
+                    "additionalAuthenticationProviders": [
+                        {
+                            "authenticationType": "API_KEY",
+                            "apiKeyConfig": {
+                                "description": "deltaApiKey",
+                                "apiKeyExpirationDays": 7
+                            }
+                        }
+                    ],
                     "defaultAuthentication": {
                         "authenticationType": "AMAZON_COGNITO_USER_POOLS",
                         "userPoolConfig": {

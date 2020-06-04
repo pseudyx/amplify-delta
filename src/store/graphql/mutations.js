@@ -20,7 +20,6 @@ export const createTask = /* GraphQL */ `
           createdAt
           author
           updatedAt
-          owner
         }
         nextToken
       }
@@ -47,7 +46,6 @@ export const updateTask = /* GraphQL */ `
           createdAt
           author
           updatedAt
-          owner
         }
         nextToken
       }
@@ -74,7 +72,6 @@ export const deleteTask = /* GraphQL */ `
           createdAt
           author
           updatedAt
-          owner
         }
         nextToken
       }
@@ -105,7 +102,6 @@ export const createComment = /* GraphQL */ `
         updatedAt
       }
       updatedAt
-      owner
     }
   }
 `;
@@ -132,7 +128,6 @@ export const updateComment = /* GraphQL */ `
         updatedAt
       }
       updatedAt
-      owner
     }
   }
 `;
@@ -159,7 +154,6 @@ export const deleteComment = /* GraphQL */ `
         updatedAt
       }
       updatedAt
-      owner
     }
   }
 `;
@@ -217,21 +211,6 @@ export const deleteProfile = /* GraphQL */ `
     }
   }
 `;
-export const createContact = /* GraphQL */ `
-  mutation CreateContact(
-    $input: CreateContactInput!
-    $condition: ModelContactConditionInput
-  ) {
-    createContact(input: $input, condition: $condition) {
-      id
-      name
-      email
-      comment
-      createdAt
-      updatedAt
-    }
-  }
-`;
 export const updateContact = /* GraphQL */ `
   mutation UpdateContact(
     $input: UpdateContactInput!
@@ -253,6 +232,21 @@ export const deleteContact = /* GraphQL */ `
     $condition: ModelContactConditionInput
   ) {
     deleteContact(input: $input, condition: $condition) {
+      id
+      name
+      email
+      comment
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const createContact = /* GraphQL */ `
+  mutation CreateContact(
+    $input: CreateContactInput!
+    $condition: ModelContactConditionInput
+  ) {
+    createContact(input: $input, condition: $condition) {
       id
       name
       email

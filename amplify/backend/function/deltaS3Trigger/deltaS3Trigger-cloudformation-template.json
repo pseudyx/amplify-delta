@@ -1,232 +1,232 @@
 {
-    "AWSTemplateFormatVersion": "2010-09-09",
-    "Description": "Lambda resource stack creation using Amplify CLI",
-    "Parameters": {
-        "CloudWatchRule": {
-            "Type": "String",
-            "Default": "NONE",
-            "Description": " Schedule Expression"
-        },
-        "env": {
-            "Type": "String"
-        },
-        "storagedeltaS3BucketName": {
-            "Type": "String",
-            "Default": "storagedeltaS3BucketName"
-        }
-    },
-    "Conditions": {
-        "ShouldNotCreateEnvResources": {
-            "Fn::Equals": [
-                {
-                    "Ref": "env"
-                },
-                "NONE"
-            ]
-        }
-    },
-    "Resources": {
-        "LambdaFunction": {
-            "Type": "AWS::Lambda::Function",
-            "Metadata": {
-                "aws:asset:path": "./src",
-                "aws:asset:property": "Code"
-            },
-            "Properties": {
-                "Handler": "index.handler",
-                "FunctionName": {
-                    "Fn::If": [
-                        "ShouldNotCreateEnvResources",
-                        "deltaS3Trigger",
-                        {
-                            "Fn::Join": [
-                                "",
-                                [
-                                    "deltaS3Trigger",
-                                    "-",
-                                    {
-                                        "Ref": "env"
-                                    }
-                                ]
-                            ]
-                        }
-                    ]
-                },
-                "Environment": {
-                    "Variables": {
-                        "ENV": {
-                            "Ref": "env"
-                        },
-                        "REGION": {
-                            "Ref": "AWS::Region"
-                        },
-                        "STORAGE_DELTAS3_BUCKETNAME": {
-                            "Ref": "storagedeltaS3BucketName"
-                        }
-                    }
-                },
-                "Role": {
-                    "Fn::GetAtt": [
-                        "LambdaExecutionRole",
-                        "Arn"
-                    ]
-                },
-                "Runtime": "nodejs12.x",
-                "Timeout": "25",
-                "Code": {
-                    "S3Bucket": "amplify-delta-dev-221459-deployment",
-                    "S3Key": "amplify-builds/deltaS3Trigger-614a31445435794f2b58-build.zip"
-                }
-            }
-        },
-        "LambdaExecutionRole": {
-            "Type": "AWS::IAM::Role",
-            "Properties": {
-                "RoleName": {
-                    "Fn::If": [
-                        "ShouldNotCreateEnvResources",
-                        "deltaLambdaRole968ae4f1",
-                        {
-                            "Fn::Join": [
-                                "",
-                                [
-                                    "deltaLambdaRole968ae4f1",
-                                    "-",
-                                    {
-                                        "Ref": "env"
-                                    }
-                                ]
-                            ]
-                        }
-                    ]
-                },
-                "AssumeRolePolicyDocument": {
-                    "Version": "2012-10-17",
-                    "Statement": [
-                        {
-                            "Effect": "Allow",
-                            "Principal": {
-                                "Service": [
-                                    "lambda.amazonaws.com"
-                                ]
-                            },
-                            "Action": [
-                                "sts:AssumeRole"
-                            ]
-                        }
-                    ]
-                }
-            }
-        },
-        "lambdaexecutionpolicy": {
-            "DependsOn": [
-                "LambdaExecutionRole"
-            ],
-            "Type": "AWS::IAM::Policy",
-            "Properties": {
-                "PolicyName": "lambda-execution-policy",
-                "Roles": [
-                    {
-                        "Ref": "LambdaExecutionRole"
-                    }
-                ],
-                "PolicyDocument": {
-                    "Version": "2012-10-17",
-                    "Statement": [
-                        {
-                            "Effect": "Allow",
-                            "Action": [
-                                "logs:CreateLogGroup",
-                                "logs:CreateLogStream",
-                                "logs:PutLogEvents"
-                            ],
-                            "Resource": {
-                                "Fn::Sub": [
-                                    "arn:aws:logs:${region}:${account}:log-group:/aws/lambda/${lambda}:log-stream:*",
-                                    {
-                                        "region": {
-                                            "Ref": "AWS::Region"
-                                        },
-                                        "account": {
-                                            "Ref": "AWS::AccountId"
-                                        },
-                                        "lambda": {
-                                            "Ref": "LambdaFunction"
-                                        }
-                                    }
-                                ]
-                            }
-                        }
-                    ]
-                }
-            }
-        },
-        "AmplifyResourcesPolicy": {
-            "DependsOn": [
-                "LambdaExecutionRole"
-            ],
-            "Type": "AWS::IAM::Policy",
-            "Properties": {
-                "PolicyName": "amplify-lambda-execution-policy",
-                "Roles": [
-                    {
-                        "Ref": "LambdaExecutionRole"
-                    }
-                ],
-                "PolicyDocument": {
-                    "Version": "2012-10-17",
-                    "Statement": [
-                        {
-                            "Effect": "Allow",
-                            "Action": [
-                                "s3:PutObject",
-                                "s3:GetObject",
-                                "s3:ListBucket",
-                                "s3:DeleteObject"
-                            ],
-                            "Resource": [
-                                {
-                                    "Fn::Join": [
-                                        "",
-                                        [
-                                            "arn:aws:s3:::",
-                                            {
-                                                "Ref": "storagedeltaS3BucketName"
-                                            },
-                                            "/*"
-                                        ]
-                                    ]
-                                }
-                            ]
-                        }
-                    ]
-                }
-            }
-        }
-    },
-    "Outputs": {
-        "Name": {
-            "Value": {
-                "Ref": "LambdaFunction"
-            }
-        },
-        "Arn": {
-            "Value": {
-                "Fn::GetAtt": [
-                    "LambdaFunction",
-                    "Arn"
-                ]
-            }
-        },
-        "Region": {
-            "Value": {
-                "Ref": "AWS::Region"
-            }
-        },
-        "LambdaExecutionRole": {
-            "Value": {
-                "Ref": "LambdaExecutionRole"
-            }
-        }
-    }
+	"AWSTemplateFormatVersion": "2010-09-09",
+	"Description": "Lambda resource stack creation using Amplify CLI",
+	"Parameters": {
+		"CloudWatchRule": {
+			"Type": "String",
+			"Default": "NONE",
+			"Description": " Schedule Expression"
+		},
+		"env": {
+			"Type": "String"
+		},
+		"storagedeltaS3BucketName": {
+			"Type": "String",
+			"Default": "storagedeltaS3BucketName"
+		}
+	},
+	"Conditions": {
+		"ShouldNotCreateEnvResources": {
+			"Fn::Equals": [
+				{
+					"Ref": "env"
+				},
+				"NONE"
+			]
+		}
+	},
+	"Resources": {
+		"LambdaFunction": {
+			"Type": "AWS::Lambda::Function",
+			"Metadata": {
+				"aws:asset:path": "./src",
+				"aws:asset:property": "Code"
+			},
+			"Properties": {
+				"Handler": "index.handler",
+				"FunctionName": {
+					"Fn::If": [
+						"ShouldNotCreateEnvResources",
+						"deltaS3Trigger",
+						{
+							"Fn::Join": [
+								"",
+								[
+									"deltaS3Trigger",
+									"-",
+									{
+										"Ref": "env"
+									}
+								]
+							]
+						}
+					]
+				},
+				"Environment": {
+					"Variables": {
+						"ENV": {
+							"Ref": "env"
+						},
+						"REGION": {
+							"Ref": "AWS::Region"
+						},
+						"STORAGE_DELTAS3_BUCKETNAME": {
+							"Ref": "storagedeltaS3BucketName"
+						}
+					}
+				},
+				"Role": {
+					"Fn::GetAtt": [
+						"LambdaExecutionRole",
+						"Arn"
+					]
+				},
+				"Runtime": "nodejs12.x",
+				"Timeout": "25",
+				"Code": {
+					"S3Bucket": "amplify-delta-dev-221459-deployment",
+					"S3Key": "amplify-builds/deltaS3Trigger-41594949433531474c6d-build.zip"
+				}
+			}
+		},
+		"LambdaExecutionRole": {
+			"Type": "AWS::IAM::Role",
+			"Properties": {
+				"RoleName": {
+					"Fn::If": [
+						"ShouldNotCreateEnvResources",
+						"deltaLambdaRole968ae4f1",
+						{
+							"Fn::Join": [
+								"",
+								[
+									"deltaLambdaRole968ae4f1",
+									"-",
+									{
+										"Ref": "env"
+									}
+								]
+							]
+						}
+					]
+				},
+				"AssumeRolePolicyDocument": {
+					"Version": "2012-10-17",
+					"Statement": [
+						{
+							"Effect": "Allow",
+							"Principal": {
+								"Service": [
+									"lambda.amazonaws.com"
+								]
+							},
+							"Action": [
+								"sts:AssumeRole"
+							]
+						}
+					]
+				}
+			}
+		},
+		"lambdaexecutionpolicy": {
+			"DependsOn": [
+				"LambdaExecutionRole"
+			],
+			"Type": "AWS::IAM::Policy",
+			"Properties": {
+				"PolicyName": "lambda-execution-policy",
+				"Roles": [
+					{
+						"Ref": "LambdaExecutionRole"
+					}
+				],
+				"PolicyDocument": {
+					"Version": "2012-10-17",
+					"Statement": [
+						{
+							"Effect": "Allow",
+							"Action": [
+								"logs:CreateLogGroup",
+								"logs:CreateLogStream",
+								"logs:PutLogEvents"
+							],
+							"Resource": {
+								"Fn::Sub": [
+									"arn:aws:logs:${region}:${account}:log-group:/aws/lambda/${lambda}:log-stream:*",
+									{
+										"region": {
+											"Ref": "AWS::Region"
+										},
+										"account": {
+											"Ref": "AWS::AccountId"
+										},
+										"lambda": {
+											"Ref": "LambdaFunction"
+										}
+									}
+								]
+							}
+						}
+					]
+				}
+			}
+		},
+		"AmplifyResourcesPolicy": {
+			"DependsOn": [
+				"LambdaExecutionRole"
+			],
+			"Type": "AWS::IAM::Policy",
+			"Properties": {
+				"PolicyName": "amplify-lambda-execution-policy",
+				"Roles": [
+					{
+						"Ref": "LambdaExecutionRole"
+					}
+				],
+				"PolicyDocument": {
+					"Version": "2012-10-17",
+					"Statement": [
+						{
+							"Effect": "Allow",
+							"Action": [
+								"s3:PutObject",
+								"s3:GetObject",
+								"s3:ListBucket",
+								"s3:DeleteObject"
+							],
+							"Resource": [
+								{
+									"Fn::Join": [
+										"",
+										[
+											"arn:aws:s3:::",
+											{
+												"Ref": "storagedeltaS3BucketName"
+											},
+											"/*"
+										]
+									]
+								}
+							]
+						}
+					]
+				}
+			}
+		}
+	},
+	"Outputs": {
+		"Name": {
+			"Value": {
+				"Ref": "LambdaFunction"
+			}
+		},
+		"Arn": {
+			"Value": {
+				"Fn::GetAtt": [
+					"LambdaFunction",
+					"Arn"
+				]
+			}
+		},
+		"Region": {
+			"Value": {
+				"Ref": "AWS::Region"
+			}
+		},
+		"LambdaExecutionRole": {
+			"Value": {
+				"Ref": "LambdaExecutionRole"
+			}
+		}
+	}
 }
