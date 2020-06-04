@@ -53,11 +53,18 @@ export const actionTypes = {
 export const userActions = {
     registerUser: (userRegister) => {
         return async dispatch => {
-            UserSvc.registerUser(userRegister).then((profile) => {
-                dispatch(success(profile));
-            }).catch((error) => {
-                dispatch(failure(error));
-            });
+
+            var validation = await UserSvc.validateRegistration(userRegister);
+
+            if(validation.valid === true){
+                UserSvc.registerUser(userRegister).then((profile) => {
+                    dispatch(success(profile));
+                }).catch((error) => {
+                    dispatch(failure(error));
+                });
+            } else {
+                dispatch(failure(validation.message));
+            }
         }
 
         function success(user) {return { type: actionTypes.REGISTER_USER_SUCCESS, user }}

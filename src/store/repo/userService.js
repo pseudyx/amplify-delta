@@ -193,8 +193,27 @@ export default class UserSvc {
         }
     }
 
+    static async validateRegistration(userRegister){
+        var {email, password, name, profile} = userRegister;
+        if (this.isNotEmpty(email) && this.isNotEmpty(password) && this.isNotEmpty(name) && this.isNotEmpty(profile)){
+            return {valid: true, message: '' };
+        } else {
+            var errors = [];
+            if(!this.isNotEmpty(email)) errors.push('must contain email.');
+            if(!this.isNotEmpty(password)) errors.push('must contain password.');
+            if(!this.isNotEmpty(name)) errors.push('must contain name.');
+            if(!this.isNotEmpty(profile)) errors.push('must contain profile link.');
+
+            return {valid: false, message: errors.join(" \n") };
+        }
+    }
+
     static async confirmUser(userConfirm) {
             return Auth.confirmSignUp(userConfirm.username, userConfirm.code);
+    }
+
+    static isNotEmpty(variable){
+        return (variable !== undefined && variable !== null && variable !== '');
     }
 
     /*

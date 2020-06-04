@@ -154,7 +154,7 @@ class RegisterPage extends Component {
                             </FormText>
                         </Col>
                     </FormGroup>
-                    <FormGroup><FormText>{this.props.error?.message}</FormText></FormGroup>
+                    <FormGroup><FormText>{this.props.error}</FormText></FormGroup>
                     <Button>
                     Register
                     </Button>  
