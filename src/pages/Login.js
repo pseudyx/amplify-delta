@@ -12,6 +12,7 @@ class LoginPage extends Component {
         this.state = {
             email: "",
             password: "",
+            code: '',
             validate: {
                 emailState: ''
               }
@@ -53,6 +54,17 @@ class LoginPage extends Component {
         this.props.login(this.state.email, this.state.password, from?.pathname);
     }
 
+    handleResendVarify = async (e) => {
+        e.preventDefault();
+        this.props.resendVarify(this.state.email);
+    }
+
+    handleVarify = async (e) => {
+        e.preventDefault();
+        var {email, code, password} = this.state;
+        this.props.confirmUser({username: email, code: code, password: password});
+    }
+
     handleNewPassword = async (e) => {
         e.preventDefault();
         this.props.newPassword(this.props.user, this.state.password);
@@ -60,25 +72,64 @@ class LoginPage extends Component {
 
 
 
-    passwordForm(password) {
-        return (
-            <Form onSubmit={this.handleNewPassword}>
-                <FormGroup>
-                <Input
-                    id="newPassword" 
-                    name="password"
-                    type="password"
-                    placeholder="Password"
-                    value={password}
-                    onChange={this.handleChange}
-                />
-                <FormText>You need to set a new password</FormText>
-                </FormGroup>
-                <Button>
-                Update
-                </Button>  
-            </Form>
-        );
+    passwordForm(email, password) {
+
+        if(this.props.isEdit){
+            return (
+            <Form onSubmit={this.handleVarify}>
+                    <FormGroup>
+                        <Input
+                            id="email" 
+                            name="email"
+                            type="email"
+                            placeholder="Email"
+                            value={email}
+                            valid={ this.state.validate.emailState === 'has-success' }
+                            invalid={ this.state.validate.emailState === 'has-danger' }
+                            onChange={ (e) => {
+                                this.validateEmail(e)
+                                this.handleChange(e)
+                            } }
+                            autoFocus
+                        />
+                    </FormGroup>
+                    <FormGroup>
+                        <Input
+                            id="confirmCode" 
+                            name="code"
+                            type="text"
+                            placeholder="Confirmation Code"
+                            value={this.state.code}
+                            onChange={this.handleChange}
+                        />
+                        <FormText>You have been emailed a confirmation code. <Button color="link" onClick={this.handleResendVarify}>Resend</Button></FormText>
+                    </FormGroup>
+                    <FormGroup><FormText>{this.props.error?.message}</FormText></FormGroup>
+                    <Button>
+                    Varify
+                    </Button>  
+                </Form>
+                );
+        } else {
+            return (
+                <Form onSubmit={this.handleNewPassword}>
+                    <FormGroup>
+                    <Input
+                        id="newPassword" 
+                        name="password"
+                        type="password"
+                        placeholder="Password"
+                        value={password}
+                        onChange={this.handleChange}
+                    />
+                    <FormText>You need to set a new password</FormText>
+                    </FormGroup>
+                    <Button>
+                    Update
+                    </Button>  
+                </Form>
+            );
+        }
     }
 
     loginForm(email, password) {
@@ -133,7 +184,7 @@ class LoginPage extends Component {
                     <Col sm={12} md={7}>
                         <Card>
                             <CardBody>
-                                {(this.props.challengePassword) ? this.passwordForm(password) : this.loginForm(email, password)}
+                                {(this.props.challengePassword) ? this.passwordForm(email, password) : this.loginForm(email, password)}
                             </CardBody>
                         </Card>
                     </Col>
@@ -154,11 +205,12 @@ class LoginPage extends Component {
 }
 
 const mapState = state => {
-    const {user, isAuthenticated, challengePassword, loginDispatch, error } = state.user;
+    const {user, isAuthenticated, isEdit, challengePassword, loginDispatch, error } = state.user;
     return {
         isAuthenticated,
         loginDispatch,
         challengePassword,
+        isEdit,
         error,
         user
     }

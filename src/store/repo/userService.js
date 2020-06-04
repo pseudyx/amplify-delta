@@ -9,6 +9,14 @@ export default class UserSvc {
         return Auth.signIn(email, password);
     }
 
+    static async getRemoteUserId(){
+        var cognitoSession = await Auth.currentSession();
+        var payload = cognitoSession.idToken.decodePayload();
+        var userId = payload["cognito:username"];
+
+        return userId;
+    }
+
     static async logout(){
         sessionStorage.removeItem('deltaUserSession');
         return Auth.signOut();
@@ -210,6 +218,10 @@ export default class UserSvc {
 
     static async confirmUser(userConfirm) {
             return Auth.confirmSignUp(userConfirm.username, userConfirm.code);
+    }
+
+    static async resendVarify(email){
+        return Auth.resendSignUp(email);
     }
 
     static isNotEmpty(variable){

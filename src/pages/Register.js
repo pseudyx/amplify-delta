@@ -63,8 +63,7 @@ class RegisterPage extends Component {
     handleHoverLeave = (e) => {
         e.currentTarget.classList.remove("focus");
     }
-
-   
+  
     registerForm() {
         const {email, password, name, profile } = this.state;
 
@@ -155,14 +154,14 @@ class RegisterPage extends Component {
                         </Col>
                     </FormGroup>
                     <FormGroup><FormText>{this.props.error}</FormText></FormGroup>
-                    <Button>
+                    <Button color="primary">
                     Register
-                    </Button>  
+                    </Button> 
                 </Form>
         );
     }
 
-    confirmForm(password) {
+    confirmForm() {
         const {code} = this.state;
         return (
             <Form onSubmit={this.handleCodeSubmit}>

@@ -18,6 +18,7 @@ export const actionTypes = {
     LOGIN_REQUEST: 'LOGIN_REQUEST',
     LOGIN_CHALLENGE: 'LOGIN_CHALLENGE',
     LOGIN_SUCCESS: 'LOGIN_SUCCESS',
+    LOGIN_VARIFY: 'LOGIN_VARIFY',
     LOGIN_FAILURE: 'LOGIN_FAILURE',
 
     LOGOUT_REQUEST: 'LOGOUT_REQUEST',
@@ -41,6 +42,7 @@ export const actionTypes = {
     
     CONFIRM_USER_SUCCESS: 'CONFIRM_USER_SUCCESS',
     CONFIRM_USER_FAILURE: 'CONFIRM_USER_FAILURE',
+    CONFIRM_USER_LOGIN: 'CONFIRM_USER_LOGIN',
 
     USER_PIC_UPDATE_REQUEST: 'USER_PIC_UPDATE_REQUEST',
     USER_PIC_UPDATE_PROGRESS: 'USER_PIC_UPDATE_PROGRESS',
@@ -70,10 +72,24 @@ export const userActions = {
         function success(user) {return { type: actionTypes.REGISTER_USER_SUCCESS, user }}
         function failure(error) {return { type: actionTypes.REGISTER_USER_FAILURE, error }}
     },
+    resendVarify: (email) => {
+        return async dispatch => {
+            UserSvc.resendVarify(email).then((resp) => {
+                dispatch(varify());
+            }).catch((error)=>{
+                dispatch(failure(error));
+            })
+        }
+        function varify() {return { type: actionTypes.LOGIN_VARIFY }}
+        function failure(error) {return { type: actionTypes.CONFIRM_USER_FAILURE, error }}
+    },
     confirmUser: (userConfirm) => {
         return async dispatch => {
             UserSvc.confirmUser(userConfirm).then((profile) => {
                 dispatch(success(profile));
+                if(userConfirm.password){
+                    dispatch(login(userConfirm));
+                }
                 history.push('/delta');
             }).catch((error)=>{
                 dispatch(failure(error));
@@ -81,6 +97,7 @@ export const userActions = {
         }
         function success(user) {return { type: actionTypes.CONFIRM_USER_SUCCESS, user }}
         function failure(error) {return { type: actionTypes.CONFIRM_USER_FAILURE, error }}
+        function login(user){return { type: actionTypes.CONFIRM_USER_LOGIN, user }}
     },
     login: (email, password, redirect) => {
         return async dispatch => {
@@ -98,13 +115,19 @@ export const userActions = {
                     });
                 }    
             }).catch((error) => {
-                dispatch(failure(error));
+                if(error.name === 'UserNotConfirmedException'){
+                    dispatch(varify());
+                } else {
+                    console.log(error);
+                    dispatch(failure(error));
+                }
             });
         }
 
         function request(user) {return { type: actionTypes.LOGIN_REQUEST, user }}
         function challenge(user) {return { type: actionTypes.LOGIN_CHALLENGE, user }}
         function success(user) {return { type: actionTypes.LOGIN_SUCCESS, user }}
+        function varify() {return { type: actionTypes.LOGIN_VARIFY }}
         function failure(error) {return { type: actionTypes.LOGIN_FAILURE, error }}
     },
     newPassword: (user, password) => {
@@ -226,6 +249,11 @@ export const reducer = (state = initialState, action) => {
                 loginDispatch: false,
                 user: action.user
             };
+        case actionTypes.LOGIN_VARIFY:
+            return {
+                challengePassword: true,
+                isEdit: true
+            }
         case actionTypes.LOGIN_FAILURE:
             return {
                 isAuthenticated: false,
@@ -294,6 +322,11 @@ export const reducer = (state = initialState, action) => {
             return {
                 error: action.error
             };
+        case actionTypes.CONFIRM_USER_LOGIN:
+            userActions.login(action.user.username,action.user.password)
+            return{
+                ...state
+            }
         case actionTypes.USER_PIC_UPDATE_PROGRESS:
             var prog = (action.progress.loaded/action.progress.total)*100;
             return{
