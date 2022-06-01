@@ -8,6 +8,6 @@
     "aws-sdk": "^2.686.0",
     "es6-promise": "^4.2.8",
     "isomorphic-fetch": "^2.2.1",
-    "sharp": "^0.25.3"
+    "sharp": "^0.30.5"
   }
 }
